@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Main sitemap
+Sitemap: https://omadecravings.com/sitemap.xml
+
+# Disallow auth pages and admin areas
+Disallow: /auth/
+Disallow: /dashboard
+Disallow: /_authenticated/
+Disallow: /_unauthenticated/
+
+# Allow specific pages
+Allow: /
+
+# Crawl delay (optional - adjust based on server capacity)
+Crawl-delay: 1
