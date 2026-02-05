@@ -1,13 +1,15 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { AuthHydrationProvider } from '@/components/providers/AuthHydrationProvider'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/store/auth'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { createRoot } from 'react-dom/client'
 import './styles/globals.css'
-import { routeTree } from './routeTree.gen'
-import { useAuthStore } from '@/store/auth'
+import { AuthDebug } from '@/components/debug/AuthDebug'
 import { usePermissions } from '@/hooks/usePermissions'
+import { useAuthStore } from '@/store/auth'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { routeTree } from './routeTree.gen'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,9 +65,12 @@ if (!rootElement.innerHTML) {
   root.render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <App />
-        <Toaster />
-        <ReactQueryDevtools buttonPosition="bottom-right" />
+        <AuthHydrationProvider>
+          <App />
+          <AuthDebug />
+          <Toaster />
+          <ReactQueryDevtools buttonPosition="bottom-right" />
+        </AuthHydrationProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

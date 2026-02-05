@@ -42,8 +42,7 @@
       },
       "style": {
         "noNegationElse": "off",
-        "useBlockStatements": "off",
-        "useShorthandPropertyAssignment": "error"
+        "useBlockStatements": "off"
       },
       "suspicious": {
         "noArrayIndexKey": "error",

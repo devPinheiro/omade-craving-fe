@@ -1,9 +1,9 @@
-import { ErrorBoundary } from 'react-error-boundary'
+import type { User } from '@/types/auth'
+import type { QueryClient } from '@tanstack/react-query'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import type { QueryClient } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
-import type { User } from '@/types/auth'
+import { ErrorBoundary } from 'react-error-boundary'
 
 type AuthContext = {
   user: User | null
@@ -39,10 +39,7 @@ function NotFound() {
       <div className="text-center">
         <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
         <p className="text-xl text-gray-600 mb-8">Page not found</p>
-        <a
-          href="/"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
+        <a href="/" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
           Go home
         </a>
       </div>

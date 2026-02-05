@@ -8,14 +8,28 @@ export interface SitemapUrl {
 }
 
 export function generateSitemap(urls: SitemapUrl[]): string {
-  const urlElements = urls.map(url => {
-    return `  <url>
-    <loc>${url.loc}</loc>${url.lastmod ? `
-    <lastmod>${url.lastmod}</lastmod>` : ''}${url.changefreq ? `
-    <changefreq>${url.changefreq}</changefreq>` : ''}${url.priority !== undefined ? `
-    <priority>${url.priority}</priority>` : ''}
+  const urlElements = urls
+    .map((url) => {
+      return `  <url>
+    <loc>${url.loc}</loc>${
+      url.lastmod
+        ? `
+    <lastmod>${url.lastmod}</lastmod>`
+        : ''
+    }${
+      url.changefreq
+        ? `
+    <changefreq>${url.changefreq}</changefreq>`
+        : ''
+    }${
+      url.priority !== undefined
+        ? `
+    <priority>${url.priority}</priority>`
+        : ''
+    }
   </url>`
-  }).join('\n')
+    })
+    .join('\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -25,20 +39,20 @@ ${urlElements}
 
 export function getStaticSitemapUrls(): SitemapUrl[] {
   const now = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
-  
+
   return [
     {
       loc: appSEOConfig.siteUrl,
       lastmod: now,
       changefreq: 'weekly',
-      priority: 1.0
+      priority: 1.0,
     },
     {
       loc: `${appSEOConfig.siteUrl}/auth/login`,
       lastmod: now,
       changefreq: 'monthly',
-      priority: 0.3
-    }
+      priority: 0.3,
+    },
   ]
 }
 

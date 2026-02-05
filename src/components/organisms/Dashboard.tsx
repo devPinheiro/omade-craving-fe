@@ -7,9 +7,10 @@ export function Dashboard() {
 
   useSEO({
     title: 'Dashboard - Omade Cravings | Your Account Hub',
-    description: 'Access your Omade Cravings dashboard to manage orders, track preferences, and stay updated with the latest artisanal baked goods and bakery news.',
+    description:
+      'Access your Omade Cravings dashboard to manage orders, track preferences, and stay updated with the latest artisanal baked goods and bakery news.',
     keywords: ['dashboard', 'account', 'orders', 'preferences', 'customer portal'],
-    noIndex: true // Private dashboard shouldn't be indexed
+    noIndex: true, // Private dashboard shouldn't be indexed
   })
 
   return (
@@ -28,9 +29,15 @@ export function Dashboard() {
           <CardContent>
             {user && (
               <div className="space-y-2">
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
+                <p>
+                  <strong>Name:</strong> {user.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {user.email}
+                </p>
+                <p>
+                  <strong>Role:</strong> {user.role}
+                </p>
               </div>
             )}
           </CardContent>

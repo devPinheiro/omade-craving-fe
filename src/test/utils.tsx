@@ -1,8 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, type RenderOptions } from '@testing-library/react'
-import { createMemoryHistory, createRouter } from '@tanstack/react-router'
-import type { ReactElement } from 'react'
 import { routeTree } from '@/routeTree.gen'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createMemoryHistory, createRouter } from '@tanstack/react-router'
+import { type RenderOptions, render } from '@testing-library/react'
+import type { ReactElement } from 'react'
 
 // Create test query client
 const createTestQueryClient = () =>
@@ -46,9 +46,7 @@ const customRender = (
   const router = createTestRouter(initialEntries)
 
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 
   return {
