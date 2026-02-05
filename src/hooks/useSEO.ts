@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { updateDocumentMeta, generateSEO } from '@/lib/seo'
+import { generateSEO, updateDocumentMeta } from '@/lib/seo'
 import type { SEOConfig } from '@/lib/seo'
+import { useEffect } from 'react'
 
 export function useSEO(seoConfig: Partial<SEOConfig> = {}) {
   useEffect(() => {

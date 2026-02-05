@@ -2,9 +2,11 @@ export interface User {
   id: string
   email: string
   name: string
-  avatar?: string
+  avatar_url?: string | null
   role: string
-  permissions: string[]
+  permissions?: string[]
+  phone?: string | null
+  social_provider?: string | null
   createdAt: string
   updatedAt: string
 }
@@ -16,8 +18,16 @@ export interface LoginCredentials {
 
 export interface AuthResponse {
   user: User
+  access_token: string
+  refresh_token: string
+  expires_in: number
+}
+
+export interface NormalizedAuthResponse {
+  user: User
   accessToken: string
   refreshToken: string
+  expiresIn: number
 }
 
 export interface AuthState {
@@ -26,6 +36,7 @@ export interface AuthState {
   refreshToken: string | null
   isAuthenticated: boolean
   isLoading: boolean
+  hasHydrated: boolean
 }
 
 export interface AuthActions {
@@ -35,6 +46,7 @@ export interface AuthActions {
   setTokens: (accessToken: string, refreshToken: string) => void
   clearAuth: () => void
   refreshAuth: () => Promise<void>
+  setHasHydrated: () => void
 }
 
 export type AuthStore = AuthState & AuthActions

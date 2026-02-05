@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@/test/utils'
+import { describe, expect, it, vi } from 'vitest'
 import { Dashboard } from '../Dashboard'
 
 // Mock the useAuth hook
@@ -21,14 +21,14 @@ vi.mock('@/hooks/useAuth', () => ({
 describe('Dashboard', () => {
   it('renders dashboard title', () => {
     render(<Dashboard />)
-    
+
     expect(screen.getByText('Dashboard')).toBeInTheDocument()
     expect(screen.getByText('Welcome back to your dashboard')).toBeInTheDocument()
   })
 
   it('displays user information', () => {
     render(<Dashboard />)
-    
+
     expect(screen.getByText('John Doe')).toBeInTheDocument()
     expect(screen.getByText('john@example.com')).toBeInTheDocument()
     expect(screen.getByText('user')).toBeInTheDocument()
@@ -36,7 +36,7 @@ describe('Dashboard', () => {
 
   it('shows features list', () => {
     render(<Dashboard />)
-    
+
     expect(screen.getByText('✅ TanStack Router')).toBeInTheDocument()
     expect(screen.getByText('✅ TypeScript')).toBeInTheDocument()
     expect(screen.getByText('✅ Tailwind CSS')).toBeInTheDocument()

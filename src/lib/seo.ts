@@ -34,27 +34,30 @@ export const appSEOConfig: AppSEOConfig = {
     'handcrafted bread',
     'local bakery',
     'premium baking',
-    'artisanal food'
+    'artisanal food',
   ],
   twitterHandle: '@omadecravings',
   locale: 'en_US',
-  type: 'website'
+  type: 'website',
 }
 
 export const defaultSEO: SEOConfig = {
   title: 'Omade Cravings - Artisanal Breads & Fresh Baked Goods',
-  description: 'Experience the finest artisanal breads and fresh baked goods at Omade Cravings. We craft premium sourdough, pastries, and specialty items using organic ingredients and traditional techniques.',
+  description:
+    'Experience the finest artisanal breads and fresh baked goods at Omade Cravings. We craft premium sourdough, pastries, and specialty items using organic ingredients and traditional techniques.',
   keywords: appSEOConfig.defaultKeywords,
   ogImage: appSEOConfig.defaultImage,
   ogType: 'website',
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
 }
 
 export function generateSEO(seoConfig: Partial<SEOConfig> = {}): SEOConfig {
   return {
     ...defaultSEO,
     ...seoConfig,
-    keywords: seoConfig.keywords ? [...defaultSEO.keywords!, ...seoConfig.keywords] : defaultSEO.keywords
+    keywords: seoConfig.keywords
+      ? [...defaultSEO.keywords!, ...seoConfig.keywords]
+      : defaultSEO.keywords,
   }
 }
 
@@ -66,7 +69,7 @@ export function updateDocumentMeta(seo: SEOConfig): void {
   const updateMeta = (name: string, content: string, property = false) => {
     const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`
     let meta = document.querySelector(selector) as HTMLMetaElement
-    
+
     if (!meta) {
       meta = document.createElement('meta')
       if (property) {
@@ -76,7 +79,7 @@ export function updateDocumentMeta(seo: SEOConfig): void {
       }
       document.head.appendChild(meta)
     }
-    
+
     meta.content = content
   }
 
@@ -92,7 +95,7 @@ export function updateDocumentMeta(seo: SEOConfig): void {
   updateMeta('og:description', seo.description, true)
   updateMeta('og:type', seo.ogType || 'website', true)
   updateMeta('og:locale', appSEOConfig.locale, true)
-  
+
   if (seo.ogImage) {
     updateMeta('og:image', seo.ogImage, true)
     updateMeta('og:image:alt', `${appSEOConfig.siteName} - ${seo.title}`, true)
@@ -100,7 +103,7 @@ export function updateDocumentMeta(seo: SEOConfig): void {
 
   if (seo.canonical) {
     updateMeta('og:url', seo.canonical, true)
-    
+
     // Update canonical link
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement
     if (!canonical) {
@@ -115,12 +118,12 @@ export function updateDocumentMeta(seo: SEOConfig): void {
   updateMeta('twitter:card', seo.twitterCard || 'summary_large_image')
   updateMeta('twitter:title', seo.title)
   updateMeta('twitter:description', seo.description)
-  
+
   if (appSEOConfig.twitterHandle) {
     updateMeta('twitter:site', appSEOConfig.twitterHandle)
     updateMeta('twitter:creator', appSEOConfig.twitterHandle)
   }
-  
+
   if (seo.ogImage) {
     updateMeta('twitter:image', seo.ogImage)
     updateMeta('twitter:image:alt', `${appSEOConfig.siteName} - ${seo.title}`)
@@ -137,7 +140,7 @@ export function updateDocumentMeta(seo: SEOConfig): void {
   updateMeta('author', appSEOConfig.siteName)
   updateMeta('viewport', 'width=device-width, initial-scale=1.0')
   updateMeta('theme-color', '#8B5CF6') // Purple theme color
-  
+
   // Structured Data
   if (seo.structuredData) {
     updateStructuredData(seo.structuredData)
@@ -160,118 +163,115 @@ function updateStructuredData(data: object): void {
 
 export function getBusinessStructuredData() {
   return {
-    "@context": "https://schema.org",
-    "@type": "Bakery",
-    "name": appSEOConfig.siteName,
-    "description": defaultSEO.description,
-    "url": appSEOConfig.siteUrl,
-    "logo": appSEOConfig.defaultImage,
-    "image": appSEOConfig.defaultImage,
-    "servesCuisine": "Bakery",
-    "priceRange": "$$",
-    "paymentAccepted": "Cash, Credit Card",
-    "currenciesAccepted": "USD",
-    "openingHours": [
-      "Mo-Fr 06:00-18:00",
-      "Sa-Su 07:00-17:00"
-    ],
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Your City",
-      "addressRegion": "Your State",
-      "addressCountry": "US"
+    '@context': 'https://schema.org',
+    '@type': 'Bakery',
+    name: appSEOConfig.siteName,
+    description: defaultSEO.description,
+    url: appSEOConfig.siteUrl,
+    logo: appSEOConfig.defaultImage,
+    image: appSEOConfig.defaultImage,
+    servesCuisine: 'Bakery',
+    priceRange: '$$',
+    paymentAccepted: 'Cash, Credit Card',
+    currenciesAccepted: 'USD',
+    openingHours: ['Mo-Fr 06:00-18:00', 'Sa-Su 07:00-17:00'],
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Your City',
+      addressRegion: 'Your State',
+      addressCountry: 'US',
     },
-    "telephone": "+1-XXX-XXX-XXXX",
-    "email": "hello@omadecravings.com",
-    "sameAs": [
-      "https://facebook.com/omadecravings",
-      "https://instagram.com/omadecravings",
-      "https://twitter.com/omadecravings"
-    ]
+    telephone: '+1-XXX-XXX-XXXX',
+    email: 'hello@omadecravings.com',
+    sameAs: [
+      'https://facebook.com/omadecravings',
+      'https://instagram.com/omadecravings',
+      'https://twitter.com/omadecravings',
+    ],
   }
 }
 
 export function getWebsiteStructuredData() {
   return {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": appSEOConfig.siteName,
-    "description": defaultSEO.description,
-    "url": appSEOConfig.siteUrl,
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": `${appSEOConfig.siteUrl}/search?q={search_term_string}`
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: appSEOConfig.siteName,
+    description: defaultSEO.description,
+    url: appSEOConfig.siteUrl,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${appSEOConfig.siteUrl}/search?q={search_term_string}`,
       },
-      "query-input": "required name=search_term_string"
+      'query-input': 'required name=search_term_string',
     },
-    "publisher": {
-      "@type": "Organization",
-      "name": appSEOConfig.siteName,
-      "logo": {
-        "@type": "ImageObject",
-        "url": appSEOConfig.defaultImage,
-        "width": 600,
-        "height": 400
-      }
-    }
+    publisher: {
+      '@type': 'Organization',
+      name: appSEOConfig.siteName,
+      logo: {
+        '@type': 'ImageObject',
+        url: appSEOConfig.defaultImage,
+        width: 600,
+        height: 400,
+      },
+    },
   }
 }
 
 export function getOrganizationStructuredData() {
   return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": appSEOConfig.siteName,
-    "url": appSEOConfig.siteUrl,
-    "logo": {
-      "@type": "ImageObject",
-      "url": appSEOConfig.defaultImage,
-      "width": 600,
-      "height": 400
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: appSEOConfig.siteName,
+    url: appSEOConfig.siteUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: appSEOConfig.defaultImage,
+      width: 600,
+      height: 400,
     },
-    "description": defaultSEO.description,
-    "foundingDate": "2024",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+1-XXX-XXX-XXXX",
-      "contactType": "customer service",
-      "email": "hello@omadecravings.com",
-      "availableLanguage": ["English"]
+    description: defaultSEO.description,
+    foundingDate: '2024',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+1-XXX-XXX-XXXX',
+      contactType: 'customer service',
+      email: 'hello@omadecravings.com',
+      availableLanguage: ['English'],
     },
-    "sameAs": [
-      "https://facebook.com/omadecravings",
-      "https://instagram.com/omadecravings",
-      "https://twitter.com/omadecravings"
-    ]
+    sameAs: [
+      'https://facebook.com/omadecravings',
+      'https://instagram.com/omadecravings',
+      'https://twitter.com/omadecravings',
+    ],
   }
 }
 
-export function getBreadcrumbStructuredData(items: Array<{name: string, url: string}>) {
+export function getBreadcrumbStructuredData(items: Array<{ name: string; url: string }>) {
   return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": items.map((item, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": item.name,
-      "item": item.url
-    }))
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
   }
 }
 
-export function getFAQStructuredData(faqs: Array<{question: string, answer: string}>) {
+export function getFAQStructuredData(faqs: Array<{ question: string; answer: string }>) {
   return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
-      "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.answer
-      }
-    }))
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
   }
 }

@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { LoginForm } from '@/components/organisms/LoginForm'
+import { createFileRoute } from '@tanstack/react-router'
 import { object, optional, string } from 'valibot'
 
 const loginSearchSchema = object({

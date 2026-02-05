@@ -1,5 +1,5 @@
-import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { AuthLayout } from '@/components/templates/AuthLayout'
+import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 
 export const Route = createFileRoute('/auth')({
