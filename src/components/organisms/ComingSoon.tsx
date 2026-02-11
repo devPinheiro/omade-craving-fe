@@ -1,5 +1,6 @@
 import { useSEO } from '@/hooks/useSEO'
 import { getBusinessStructuredData } from '@/lib/seo'
+import OmadeLogo from "@/assets/Images/Omade Cravings.png"
 
 const ComingSoon = () => {
   useSEO({
@@ -14,13 +15,15 @@ const ComingSoon = () => {
     <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto text-center">
         {/* Logo */}
-        <div className="mb-8">
-          <h1
+        <div className="my-4 ">
+          {/* <h1
             className="text-4xl sm:text-6xl lg:text-8xl font-light text-gray-900 tracking-tight"
             style={{ fontFamily: 'serif' }}
           >
             OMADE CRAVINGS
-          </h1>
+          </h1> */}
+
+          <img src={OmadeLogo} width={100}  alt="Omade Cravings Logo" className="mx-auto h-16 sm:h-20 lg:h-24" />
         </div>
 
         {/* Coming Soon Message */}
