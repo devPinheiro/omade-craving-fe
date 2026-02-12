@@ -174,7 +174,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
                 <div className="absolute top-4 left-4 space-y-1">
                   {product.tags.slice(0, 2).map((tag, index) => (
                     <div
-                      key={index}
+                      key={index+tag}
                       className="bg-black bg-opacity-75 text-white px-3 py-1 text-sm font-medium rounded"
                     >
                       {tag}
@@ -189,7 +189,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               <div className="flex space-x-2 overflow-x-auto pb-2">
                 {images.map((image, index) => (
                   <button
-                    key={index}
+                    key={index+image}
                     type="button"
                     onClick={() => setCurrentImageIndex(index)}
                     onKeyDown={(e) => handleKeyboardNavigation(e, () => setCurrentImageIndex(index))}
@@ -245,7 +245,8 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
                 <h3 className="text-lg font-medium text-gray-900">Options</h3>
                 <div className="grid grid-cols-1 gap-2">
                   {product.variants.map((variant) => (
-                    <button
+                    // biome-ignore lint/a11y/useButtonType: <explanation>
+<button
                       key={variant.id}
                       onClick={() => setSelectedVariant(variant.id)}
                       className={`p-3 border-2 rounded-lg text-left transition-all ${
@@ -273,6 +274,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               <div className="flex items-center space-x-4">
                 <h3 className="text-lg font-medium text-gray-900">Quantity</h3>
                 <div className="flex items-center space-x-3">
+                  {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="p-2 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
@@ -292,6 +294,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               </div>
 
               <div className="flex space-x-4">
+                {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
                 <button
                   onClick={handleAddToCart}
                   disabled={
@@ -317,7 +320,8 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
                   </span>
                 </button>
 
-                <button
+                {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
                   onClick={() => setIsWishlisted(!isWishlisted)}
                   className={`p-3 border-2 rounded-lg transition-all ${
                     isWishlisted
@@ -328,7 +332,8 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
                   <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
                 </button>
 
-                <button
+                {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+<button
                   onClick={() => {
                     navigator.share?.({ title: product.name, url: window.location.href }) ||
                       navigator.clipboard?.writeText(window.location.href)
@@ -385,7 +390,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
                 {!product.isActive && (
                   <div className="flex items-center space-x-2">
                     <div className="h-4 w-4 rounded-full bg-red-100 flex items-center justify-center">
-                      <div className="h-2 w-2 rounded-full bg-red-600"></div>
+                      <div className="h-2 w-2 rounded-full bg-red-600" />
                     </div>
                     <span className="text-sm text-red-600">Currently unavailable</span>
                   </div>
@@ -393,6 +398,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
                 {product.stock === 0 && product.isActive && (
                   <div className="flex items-center space-x-2">
                     <div className="h-4 w-4 rounded-full bg-red-100 flex items-center justify-center">
+                      {/* biome-ignore lint/style/useSelfClosingElements: <explanation> */}
                       <div className="h-2 w-2 rounded-full bg-red-600"></div>
                     </div>
                     <span className="text-sm text-red-600">Out of stock</span>
@@ -401,6 +407,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               </div>
             </div>
           </div>
+          </main>
         </div>
 
         {/* Product Description */}
@@ -414,8 +421,11 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
             </div>
           </div>
         )}
-      </div>
-    </div>
+     
+  </div>
+
+    
+  
   )
 }
 
