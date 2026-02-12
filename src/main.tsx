@@ -67,9 +67,14 @@ if (!rootElement.innerHTML) {
       <AuthProvider>
         <AuthHydrationProvider>
           <App />
-          <AuthDebug />
           <Toaster />
-          <ReactQueryDevtools buttonPosition="bottom-right" />
+          {
+            import.meta.env.DEV && 
+            <>
+              <AuthDebug />
+              <ReactQueryDevtools buttonPosition="bottom-right" />
+            </>
+          }
         </AuthHydrationProvider>
       </AuthProvider>
     </QueryClientProvider>

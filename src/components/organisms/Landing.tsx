@@ -686,6 +686,7 @@ const Landing = () => {
               type="email"
               placeholder="Enter your email"
               className="flex-1 px-4 py-3 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-900 text-sm sm:text-base"
+              onClick={(e) => e.preventDefault()}
             />
             <button
               type="button"

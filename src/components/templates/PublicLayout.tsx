@@ -3,6 +3,7 @@ import { SearchOverlay } from '@/components/ui/SearchOverlay'
 import { Outlet } from '@tanstack/react-router'
 import { Menu, Search, X } from 'lucide-react'
 import { Children, useEffect, useState } from 'react'
+import OmadeLogo from "@/assets/Images/Omade Cravings.png"
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -46,9 +47,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {/* Logo */}
             <div className="flex-shrink-0">
               <a href="/" className="block">
-                <h1 className="font-brand text-xl sm:text-2xl font-bold text-black tracking-luxury hover:text-gray-700 transition-colors text-luxury-shadow">
+              <img src={OmadeLogo} alt="Omade Cravings Logo" width={60}  className="inline-block" />
+                {/* <h1 className="font-brand text-xl sm:text-2xl font-bold text-black tracking-luxury hover:text-gray-700 transition-colors text-luxury-shadow">
                   OMADE CRAVINGS
-                </h1>
+                </h1> */}
               </a>
             </div>
 
@@ -298,7 +300,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
           <div className="border-t border-gray-200 mt-8 sm:mt-12 pt-6 sm:pt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
               <p className="text-gray-600 text-xs sm:text-sm text-center sm:text-left">
-                © 2024 Omade Cravings. All rights reserved.
+               &copy; {new Date().getFullYear()} Omade Cravings. All rights reserved.
               </p>
               <div className="flex space-x-4 sm:space-x-6">
                 <a
