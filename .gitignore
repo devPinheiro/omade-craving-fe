@@ -14,5 +14,11 @@ yarn-error.log*
 /build/
 .cache/
 *.bak
-
+.env.*
 .claude
+# Deno files
+deno.lock
+
+
+# Local Netlify folder
+.netlify
