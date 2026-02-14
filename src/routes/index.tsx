@@ -1,5 +1,6 @@
-import ComingSoon from '@/components/organisms/ComingSoon'
-import { PublicLayout } from '@/components/templates/PublicLayout'
+// import ComingSoon from '@/components/organisms/ComingSoon'
+import Landing from '@/components/organisms/Landing'
+// import { PublicLayout } from '@/components/templates/PublicLayout'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
@@ -9,7 +10,10 @@ export const Route = createFileRoute('/')({
 function RouteComponent() {
   return (
     // <PublicLayout>
-    <ComingSoon />
+    // <ComingSoon />
+
+    // changed the component being mounted on "/"
+    <Landing />
     // </PublicLayout>
   )
 }
