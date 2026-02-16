@@ -21,6 +21,13 @@ import {
   Zap,
 } from 'lucide-react'
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 interface AdminSidebarProps {
   isCollapsed: boolean
   onToggle: () => void
@@ -153,6 +160,11 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
   const hasPermission = usePermissions()
   const router = useRouter()
 
+  const collapsedNavItems: NavItem[] = navSections.flatMap(
+  (section) => section.items
+)
+
+
   if (isCollapsed) {
     return (
       <div className="w-16 bg-gray-50 border-r border-gray-200 flex flex-col">
@@ -161,22 +173,34 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
             <span className="text-white font-bold text-lg">O</span>
           </div>
         </div>
-        <nav className="flex-1 py-4">
-          {navSections[0].items.map((item) => (
+        <TooltipProvider delayDuration={100}>
+        <nav className="flex-1 flex flex-col items-center py-4 space-y-3">
+          {collapsedNavItems.map((item) => (
+            <Tooltip key={item.to}>
+                <TooltipTrigger asChild>
             <Link
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center justify-center p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors',
-                  isActive && 'text-green-600 bg-green-50 border-r-2 border-green-600'
+                  'flex items-center justify-center p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors ',
+                  isActive && 'text-green-600 border-r-2'
                 )
               }
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-5 w-5 " />
             </Link>
+             </TooltipTrigger>
+                <TooltipContent side="right" 
+                sideOffset={8} 
+                className="text-sm px-2 py-1"
+                >
+                  {item.label}
+                </TooltipContent>
+              </Tooltip>
           ))}
         </nav>
+        </TooltipProvider >
       </div>
     )
   }
