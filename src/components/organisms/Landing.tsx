@@ -3,9 +3,15 @@ import { getBusinessStructuredData } from '@/lib/seo'
 import { productsService } from '@/services/products'
 import { useCartStore } from '@/store/cart'
 import type { Category, Product } from '@/types/product'
-import { Heart, ShoppingCart, Star } from 'lucide-react'
+import {  ShoppingCart, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+// import { Menu, Search, X, Heart } from 'lucide-react'
+// import { CartDrawer } from '@/components/ui/CartDrawer'
+import OmadeLogo from "@/assets/Images/Omade Cravings.png"
+import { SearchOverlay } from '@/components/ui/SearchOverlay'
+
+
 
 const Landing = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -13,7 +19,22 @@ const Landing = () => {
   const [categories, setCategories] = useState<Category[]>([])
   const [productsByCategory, setProductsByCategory] = useState<Record<string, Product[]>>({})
   const [loading, setLoading] = useState(true)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const addItem = useCartStore((state) => state.addItem)
+
+    // Global keyboard shortcut for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   useSEO({
     title: 'Omade Cravings - Artisanal Bakery | Fresh Handcrafted Breads & Pastries',
@@ -49,7 +70,7 @@ const Landing = () => {
       title: 'CUSTOM CAKES',
       subtitle: 'Design your perfect celebration cake with our expert bakers',
       cta: 'BUILD YOUR CAKE',
-      link: '/build-cake',
+      link: 'javascript:void(0)',
     },
   ]
 
@@ -237,6 +258,136 @@ const Landing = () => {
 
   return (
     <div>
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200">
+        {/* Announcement Bar */}
+        {/* <div className="bg-gray-100 text-center py-2">
+          <p className="text-sm text-gray-600">
+            Due to high demand, orders may take 3-5 business days to fulfill.
+          </p>
+        </div> */}
+
+        {/* Main Navigation */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <a href="/" className="block">
+              <img src={OmadeLogo} alt="Omade Cravings Logo" width={60}  className="inline-block" />
+                {/* <h1 className="font-brand text-xl sm:text-2xl font-bold text-black tracking-luxury hover:text-gray-700 transition-colors text-luxury-shadow">
+                  OMADE CRAVINGS
+                </h1> */}
+              </a>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex space-x-6 xl:space-x-8">
+              <a
+                href="/shop?category=bread"
+                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
+              >
+                BREADS
+              </a>
+              <a
+                href="/shop?category=pastry"
+                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
+              >
+                PASTRIES
+              </a>
+              <a
+                href="/shop?category=cake"
+                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
+              >
+                CAKES
+              </a>
+              <a
+                href="/shop?category=seasonal"
+                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
+              >
+                SEASONAL
+              </a>
+              <a
+                href="/about"
+                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
+              >
+                ABOUT
+              </a>
+            </nav>
+
+            {/* Right Side Icons */}
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              {/* <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-all duration-300 group hover:scale-110 active:scale-95"
+                aria-label="Search products (⌘K)"
+                title="Search products (⌘K)"
+              >
+                <Search className="h-5 w-5 text-gray-600 group-hover:text-gray-900 transition-all duration-300 group-hover:rotate-12" />
+              </button>
+              <CartDrawer /> */}
+
+              {/* Mobile menu button */}
+              {/* <button
+                type="button"
+                className="lg:hidden p-2 -m-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button> */}
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden border-t border-gray-200 py-4">
+              <div className="flex flex-col space-y-2">
+                <a
+                  href="/shop?category=bread"
+                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
+                >
+                  BREADS
+                </a>
+                <a
+                  href="/shop?category=pastry"
+                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
+                >
+                  PASTRIES
+                </a>
+                <a
+                  href="/shop?category=cake"
+                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
+                >
+                  CAKES
+                </a>
+                <a
+                  href="/shop?category=seasonal"
+                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
+                >
+                  SEASONAL
+                </a>
+                <a
+                  href="/about"
+                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
+                >
+                  ABOUT
+                </a>
+                <a
+                  href="/feedback"
+                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
+                >
+                  FEEDBACK
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+
+           {/* Search Overlay */}
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
+
       {/* Hero Carousel Section - Salt Lagos Style with Animation */}
       <section className="relative">
         <div className="relative h-[70vh] overflow-hidden">

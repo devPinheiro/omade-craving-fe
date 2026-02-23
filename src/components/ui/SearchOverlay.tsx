@@ -15,6 +15,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [searchResults, setSearchResults] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [search, setSearch] = useState ('')
   const [trendingSearches] = useState(['Sourdough', 'Croissants', 'Red Velvet', 'Artisan Bread'])
   const searchInputRef = useRef<HTMLInputElement>(null)
   const addItem = useCartStore((state) => state.addItem)
@@ -80,6 +81,11 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     return () => clearTimeout(debounceTimer)
   }, [searchQuery])
 
+const handleClearSearch = () => {
+  setSearch('')
+  setSearchQuery ('')
+}
+
   const handleSearch = (query: string) => {
     setSearchQuery(query)
 
@@ -143,8 +149,11 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-12 pr-16 py-4 text-xl border-2 border-gray-200 rounded-2xl focus:border-black focus:outline-none transition-all duration-300 font-content bg-gray-50 focus:bg-white focus:shadow-lg focus:shadow-black/5"
               />
-              <button
-                onClick={onClose}
+              
+             <button
+                search = {search}
+                onClick={handleClearSearch}
+                aria-label=" clear-search"
                 className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X className="h-6 w-6 text-gray-600" />

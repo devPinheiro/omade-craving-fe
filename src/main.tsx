@@ -72,7 +72,7 @@ if (!rootElement.innerHTML) {
             import.meta.env.DEV && 
             <>
               <AuthDebug />
-              <ReactQueryDevtools buttonPosition="bottom-right" />
+              <ReactQueryDevtools buttonPosition="bottom-right" showCloseButton='true' />
             </>
           }
         </AuthHydrationProvider>

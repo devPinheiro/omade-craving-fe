@@ -1,3 +1,4 @@
+import NairaIcon from '@/Icons/NairaIcon'
 import { SalesChart } from '@/components/ui/SalesChart'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -141,7 +142,9 @@ function RecentOrders() {
                   </div>
                 </div>
                 <div className="text-right space-y-1">
-                  <p className="text-sm font-medium text-gray-900">${order.total.toFixed(2)}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    <span>&#8358;</span> { order.total.toFixed(2)}
+                  </p>
                   <div className="flex items-center space-x-2">
                     <span
                       className={`inline-flex px-2 py-1 text-xs rounded-full ${getStatusColor(order.status)}`}
@@ -173,7 +176,11 @@ function TopProducts() {
     productStats?.recent_products?.map((product) => ({
       name: product.name,
       sales: 'N/A', // Sales data not available in current API
-      revenue: `$${product.price.toLocaleString()}`,
+      revenue: (
+      <span>
+        &#8358;{product.price.toLocaleString()}
+      </span>
+    ),
       category: product.category,
     })) || []
 
@@ -260,10 +267,10 @@ export function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total sales"
-          value={orderStats?.totalRevenue ? `$${orderStats.totalRevenue.toLocaleString()}` : '$0'}
+          value={orderStats?.totalRevenue ? <span> &#8358; {orderStats.totalRevenue.toLocaleString()} </span> : <span> &#8358; 0 </span>}
           change="5%"
           changeType="increase"
-          icon={DollarSign}
+          icon={ () => <span className="text-gray-500"> <NairaIcon className="h-4 w-4" /> </span> }
         />
         <MetricCard
           title="Orders"
@@ -281,9 +288,14 @@ export function AdminDashboard() {
         />
         <MetricCard
           title="Avg Order Value"
+          // value={
+          //   orderStats?.averageOrderValue ? <span> &#8358; {orderStats.averageOrderValue.toFixed(2)} </span> : <span> &#8358; 0 </span>
+          // }
           value={
-            orderStats?.averageOrderValue ? `$${orderStats.averageOrderValue.toFixed(2)}` : '$0'
-          }
+           (orderStats?.averageOrderValue !== undefined && orderStats?.averageOrderValue !== null)
+            ? <span> &#8358; {orderStats.averageOrderValue.toFixed(2)} </span>
+             : <span> &#8358; 0.00 </span>
+            }
           change="2.3%"
           changeType="increase"
           icon={TrendingUp}
@@ -295,9 +307,9 @@ export function AdminDashboard() {
         <MetricCard
           title="Inventory Value"
           value={
-            productStats?.overview?.total_inventory_value
-              ? `$${productStats.overview.total_inventory_value.toLocaleString()}`
-              : '$0'
+            productStats?.overview?.total_inventory_value ?? 0
+              ? <span> &#8358; {productStats.overview.total_inventory_value.toLocaleString()} </span>
+              : <span> &#8358; 0 </span>
           }
           change="2%"
           changeType="increase"
@@ -325,7 +337,8 @@ export function AdminDashboard() {
         />
         <MetricCard
           title="Categories"
-          value={productStats?.categories?.distribution?.length?.toString() || '0'}
+          // value={productStats?.categories?.distribution?.length?.toString() || '0'}
+          value={orderStats?.totalRevenue ? `₦${orderStats.totalRevenue.toLocaleString()}` : "₦0"}
           change="Active categories"
           changeType="increase"
           icon={BarChart3}

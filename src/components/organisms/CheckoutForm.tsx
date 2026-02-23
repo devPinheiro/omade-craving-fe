@@ -43,6 +43,7 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
     formState: { errors, isValid },
   } = useForm<CheckoutFormData>({
     resolver: valibotResolver(checkoutSchema),
+    mode: 'all',
     defaultValues: {
       deliveryMethod: 'home_delivery',
       acceptTerms: false,
