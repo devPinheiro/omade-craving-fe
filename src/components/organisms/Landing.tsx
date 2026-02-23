@@ -6,7 +6,7 @@ import type { Category, Product } from '@/types/product'
 import {  ShoppingCart, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-// import { Menu, Search, X, Heart } from 'lucide-react'
+import { Menu, Search, X, Heart } from 'lucide-react'
 // import { CartDrawer } from '@/components/ui/CartDrawer'
 import OmadeLogo from "@/assets/Images/Omade Cravings.png"
 import { SearchOverlay } from '@/components/ui/SearchOverlay'
@@ -328,13 +328,13 @@ const Landing = () => {
               <CartDrawer /> */}
 
               {/* Mobile menu button */}
-              {/* <button
+              <button
                 type="button"
                 className="lg:hidden p-2 -m-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button> */}
+              </button>
             </div>
           </div>
 
