@@ -23,7 +23,8 @@ export interface AppSEOConfig {
 export const appSEOConfig: AppSEOConfig = {
   siteName: 'Omade Cravings',
   siteUrl: 'https://omadecravings.com',
-  defaultImage: 'https://res.cloudinary.com/appnet/image/upload/v1765399940/loaf_tcnxv5.png',
+  // defaultImage: 'https://res.cloudinary.com/appnet/image/upload/v1765399940/loaf_tcnxv5.png',
+  defaultImage: 'https://res.cloudinary.com/dfztdh10f/image/upload/v1770638460/Omade_Cravings_m8jxnu.png',
   defaultKeywords: [
     'artisan bread',
     'fresh baked goods',

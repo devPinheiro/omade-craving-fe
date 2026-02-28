@@ -170,7 +170,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
       <div className="w-16 bg-gray-50 border-r border-gray-200 flex flex-col">
         <div className="p-3 border-b border-gray-200">
           <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">O</span>
+            <span className="text-white font-bold text-lg">{user?.name?.charAt(0).toUpperCase() || 'O'}</span>
           </div>
         </div>
         <TooltipProvider delayDuration={100}>
@@ -211,7 +211,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-green-600 rounded-md flex items-center justify-center">
-            <span className="text-white font-bold">Omade</span>
+            <span className="text-white font-bold">{user?.name?.charAt(0).toUpperCase() || 'O'}</span>
           </div>
           <div>
             <h2 className="text-sm font-medium text-gray-900">Omade Cravings</h2>
