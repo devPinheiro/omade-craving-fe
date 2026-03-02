@@ -58,28 +58,71 @@ export class PaystackService {
   /**
    * Initialize Paystack payment
    */
-  initializePayment(config: PaystackConfig): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        const popup = PaystackPop.setup({
-          ...config,
-          key: PAYSTACK_PUBLIC_KEY,
-          callback: (response) => {
-            resolve(response)
-            config.callback(response)
-          },
-          onClose: () => {
-            reject(new Error('Payment was cancelled'))
-            config.onClose()
-          },
-        })
+  // initializePayment(config: PaystackConfig): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       const popup = PaystackPop.setup({
+  //         ...config,
+  //         key: PAYSTACK_PUBLIC_KEY,
+  //         callback: (response) => {
+  //           resolve(response)
+  //           config.callback(response)
+  //         },
+  //         onClose: () => {
+  //           reject(new Error('Payment was cancelled'))
+  //           config.onClose()
+  //         },
+  //       })
 
-        popup.openIframe()
-      } catch (error) {
-        reject(error)
-      }
-    })
-  }
+  //       popup.openIframe()
+  //     } catch (error) {
+  //       reject(error)
+  //     }
+  //   })
+  // }
+
+  // ... imports and class unchanged ...
+
+initializePayment(config: PaystackConfig): Promise<any> {
+  return new Promise((resolve, reject) => {
+    try {
+      const popup = new PaystackPop();  // or: import Paystack from '@paystack/inline-js'; const popup = new Paystack();
+
+      popup.newTransaction({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: config.email,
+        amount: config.amount,          // already in kobo
+        currency: config.currency || 'NGN',
+        reference: config.ref,          // ← use reference (or ref — both accepted)
+        channels: config.channels,
+        metadata: config.metadata,
+        // plan: config.plan,           // if subscriptions
+        // subaccount: config.subaccount,
+        // split_code: config.split_code,
+        // transaction_charge: config.transaction_charge,
+        // bearer: config.bearer,
+
+        onSuccess: (response) => {
+          console.log('Payment successful:', response);
+          resolve(response);
+          if (config.callback) config.callback(response);
+        },
+        onCancel: () => {
+          console.log('Payment cancelled');
+          reject(new Error('Payment was cancelled'));
+          if (config.onClose) config.onClose();
+        },
+        onError: (error) => {
+          console.error('Paystack error:', error);
+          reject(error);
+        },
+        // onLoad: (loadInfo) => { ... },   // optional
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
 
   /**
    * Prepare order data for Paystack
