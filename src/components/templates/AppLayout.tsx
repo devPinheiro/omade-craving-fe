@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/hooks/useAuth'
-import { usePermissions } from '@/hooks/usePermissions'
 import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import { usePermissions } from '@/hooks/usePermissions'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -19,11 +19,11 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/dashboard" className="text-xl font-bold text-gray-900">
-                React TanStack Starter
+                Admin Dashboard
               </Link>
               <nav className="ml-8 space-x-4">
                 <Link
-                  to="/dashboard"
+                  to="/home"
                   className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   activeProps={{ className: 'text-gray-900 bg-gray-100' }}
                 >
@@ -37,7 +37,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                     activeProps={{ className: 'text-gray-900 bg-gray-100' }}
                   >
-                    Admin
+                    Admin Dashboard
                   </Link>
                 )}
               </nav>

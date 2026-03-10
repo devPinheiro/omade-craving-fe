@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import type { Order, OrderStatus } from '@/types/order'
+import { Loader2 } from 'lucide-react'
 import {
   CheckCircle,
   Clock,
@@ -21,6 +23,7 @@ interface OrderStatusModalProps {
   onStatusUpdate?: (orderId: string, newStatus: OrderStatus, notes?: string) => void
   onCancel?: () => void
   isOpen?: boolean
+  isUpdating?: boolean
 }
 
 export function OrderStatusModal({
@@ -28,10 +31,10 @@ export function OrderStatusModal({
   onStatusUpdate,
   onCancel,
   isOpen = true,
+  isUpdating = false,
 }: OrderStatusModalProps) {
   const [newStatus, setNewStatus] = useState<OrderStatus>(order?.status || 'pending')
   const [notes, setNotes] = useState('')
-  const [trackingNumber, setTrackingNumber] = useState('')
 
   if (!isOpen || !order) return null
 
@@ -39,30 +42,36 @@ export function OrderStatusModal({
     value: OrderStatus
     label: string
     description: string
-    icon: React.ReactNode
+    icon: ReactNode
   }[] = [
     {
       value: 'pending',
       label: 'Pending',
-      description: 'Order received, awaiting processing',
+      description: 'Order received, awaiting confirmation',
       icon: <Clock className="h-4 w-4" />,
     },
     {
-      value: 'processing',
-      label: 'Processing',
+      value: 'confirmed',
+      label: 'Confirmed',
+      description: 'Order confirmed, will be prepared',
+      icon: <Package className="h-4 w-4" />,
+    },
+    {
+      value: 'preparing',
+      label: 'Preparing',
       description: 'Order is being prepared',
       icon: <Package className="h-4 w-4" />,
     },
     {
-      value: 'shipped',
-      label: 'Shipped',
-      description: 'Order has been dispatched',
-      icon: <Truck className="h-4 w-4" />,
+      value: 'ready',
+      label: 'Ready',
+      description: 'Order is ready for pickup',
+      icon: <CheckCircle className="h-4 w-4" />,
     },
     {
-      value: 'delivered',
-      label: 'Delivered',
-      description: 'Order has been delivered to customer',
+      value: 'picked_up',
+      label: 'Picked up',
+      description: 'Customer has picked up the order',
       icon: <CheckCircle className="h-4 w-4" />,
     },
     {
@@ -72,10 +81,10 @@ export function OrderStatusModal({
       icon: <X className="h-4 w-4" />,
     },
     {
-      value: 'refunded',
-      label: 'Refunded',
-      description: 'Order has been refunded',
-      icon: <RefreshCw className="h-4 w-4" />,
+      value: 'no_show',
+      label: 'No show',
+      description: 'Customer did not pick up',
+      icon: <Clock className="h-4 w-4" />,
     },
   ]
 
@@ -85,13 +94,14 @@ export function OrderStatusModal({
   }
 
   const getStatusColor = (status: OrderStatus) => {
-    const colors = {
+    const colors: Record<string, string> = {
       pending: 'border-yellow-200 bg-yellow-50',
-      processing: 'border-blue-200 bg-blue-50',
-      shipped: 'border-purple-200 bg-purple-50',
-      delivered: 'border-green-200 bg-green-50',
+      confirmed: 'border-blue-200 bg-blue-50',
+      preparing: 'border-blue-200 bg-blue-50',
+      ready: 'border-green-200 bg-green-50',
+      picked_up: 'border-green-200 bg-green-50',
       cancelled: 'border-red-200 bg-red-50',
-      refunded: 'border-gray-200 bg-gray-50',
+      no_show: 'border-gray-200 bg-gray-50',
     }
     return colors[status] || 'border-gray-200 bg-gray-50'
   }
@@ -104,7 +114,10 @@ export function OrderStatusModal({
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Update Order Status</h2>
             <p className="text-sm text-gray-600 mt-1">
-              Order #{order.orderNumber} • {order.customer.name}
+              Order #{order.orderNumber} •{' '}
+              {order.customer
+                ? `${order.customer.firstName} ${order.customer.lastName}`
+                : 'Guest'}
             </p>
           </div>
           <Button variant="ghost" size="sm" onClick={onCancel}>
@@ -225,22 +238,6 @@ export function OrderStatusModal({
             </div>
           </div>
 
-          {/* Tracking Number - Show for shipped status */}
-          {newStatus === 'shipped' && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tracking Number (Optional)
-              </label>
-              <input
-                type="text"
-                value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                placeholder="Enter tracking number"
-              />
-            </div>
-          )}
-
           {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -337,9 +334,16 @@ export function OrderStatusModal({
           <Button
             onClick={handleSubmit}
             className="bg-green-600 hover:bg-green-700"
-            disabled={newStatus === order.status}
+            disabled={newStatus === order.status || isUpdating}
           >
-            Update Status
+            {isUpdating ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Updating...
+              </>
+            ) : (
+              'Update Status'
+            )}
           </Button>
         </div>
       </div>

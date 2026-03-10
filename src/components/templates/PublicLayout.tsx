@@ -1,29 +1,30 @@
-import { CartDrawer } from '@/components/ui/CartDrawer'
-import { SearchOverlay } from '@/components/ui/SearchOverlay'
-import { Outlet } from '@tanstack/react-router'
-import { Menu, Search, X } from 'lucide-react'
-import { Children, useEffect, useState } from 'react'
-import OmadeLogo from "@/assets/Images/Omade Cravings.png"
+import { Children, useEffect, useState } from "react";
+import { Menu, Search, X } from "lucide-react";
+
+import { CartDrawer } from "@/components/ui/CartDrawer";
+import OmadeLogo from "@/assets/Images/Omade Cravings.png";
+import { Outlet } from "@tanstack/react-router";
+import { SearchOverlay } from "@/components/ui/SearchOverlay";
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // Global keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        setSearchOpen(true)
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen   ">
       {/* Skip Links */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -31,9 +32,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <a href="#primary-navigation" className="skip-link">
         Skip to navigation
       </a>
-      
+
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white w-full lg:max-w-3xl mx-auto lg:rounded-full backdrop-blur-lg shadow  lg:my-5 absolute lg:top-5 lg:left-0 lg:right-0 z-10">
         {/* Announcement Bar */}
         {/* <div className="bg-gray-100 text-center py-2">
           <p className="text-sm text-gray-600">
@@ -42,12 +43,17 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </div> */}
 
         {/* Main Navigation */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
               <a href="/" className="block">
-              <img src={OmadeLogo} alt="Omade Cravings Logo" width={60}  className="inline-block" />
+                <img
+                  src={OmadeLogo}
+                  alt="Omade Cravings Logo"
+                  width={60}
+                  className="inline-block"
+                />
                 {/* <h1 className="font-brand text-xl sm:text-2xl font-bold text-black tracking-luxury hover:text-gray-700 transition-colors text-luxury-shadow">
                   OMADE CRAVINGS
                 </h1> */}
@@ -55,7 +61,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex space-x-6 xl:space-x-8">
+            {/* <nav className="hidden lg:flex space-x-6 xl:space-x-8">
               <a
                 href="/shop?category=bread"
                 className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
@@ -86,7 +92,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               >
                 ABOUT
               </a>
-            </nav>
+            </nav> */}
 
             {/* Right Side Icons */}
             <div className="flex items-center space-x-3 sm:space-x-4">
@@ -97,18 +103,22 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 aria-label="Search products (⌘K)"
                 title="Search products (⌘K)"
               >
-                <Search className="h-5 w-5 text-gray-600 group-hover:text-gray-900 transition-all duration-300 group-hover:rotate-12" />
+                <Search className="h-5 w-5 text-black group-hover:text-gray-900 transition-all duration-300 group-hover:rotate-12" />
               </button>
               <CartDrawer />
 
               {/* Mobile menu button */}
-              <button
+              {/* <button
                 type="button"
-                className="lg:hidden p-2 -m-2"
+                className="md:hidden p-2 -m-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+                {mobileMenuOpen ? (
+                  <X className="h-6 w-6 text-white" />
+                ) : (
+                  <Menu className="h-6 w-6 text-white" />
+                )}
+              </button> */}
             </div>
           </div>
 
@@ -134,24 +144,24 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 >
                   CAKES
                 </a>
-                <a
+                {/* <a
                   href="/shop?category=seasonal"
                   className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
                 >
                   SEASONAL
-                </a>
-                <a
+                </a> */}
+                {/* <a
                   href="/about"
                   className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
                 >
                   ABOUT
-                </a>
-                <a
+                </a> */}
+                {/* <a
                   href="/feedback"
                   className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
                 >
                   FEEDBACK
-                </a>
+                </a> */}
               </div>
             </div>
           )}
@@ -162,12 +172,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Page Content */}
-      <main>{children}</main>
+      <main className="pt-32">{children}</main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-white py-12  px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             <div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                 SHOP
@@ -296,11 +306,12 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 </li>
               </ul>
             </div>
-          </div>
-          <div className="border-t border-gray-200 mt-8 sm:mt-12 pt-6 sm:pt-8">
+          </div> */}
+          <div className="mt-8 pt-6 sm:pt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
               <p className="text-gray-600 text-xs sm:text-sm text-center sm:text-left">
-               &copy; {new Date().getFullYear()} Omade Cravings. All rights reserved.
+                &copy; {new Date().getFullYear()} Omade Cravings. All rights
+                reserved.
               </p>
               <div className="flex space-x-4 sm:space-x-6">
                 <a
@@ -321,5 +332,5 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
     </div>
-  )
+  );
 }

@@ -59,14 +59,15 @@ export interface Order {
   refunds?: OrderRefund[]
 }
 
+/** Order status values from backend (pickup/bakery flow) */
 export enum OrderStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
-  PROCESSING = 'processing',
-  SHIPPED = 'shipped',
-  DELIVERED = 'delivered',
+  PREPARING = 'preparing',
+  READY = 'ready',
+  PICKED_UP = 'picked_up',
   CANCELLED = 'cancelled',
-  REFUNDED = 'refunded',
+  NO_SHOW = 'no_show',
 }
 
 export enum PaymentStatus {

@@ -1,9 +1,5 @@
-import { useSEO } from '@/hooks/useSEO'
-import { getBusinessStructuredData } from '@/lib/seo'
-import { useCartStore } from '@/store/cart'
-import type { Product } from '@/types/product'
-import { handleKeyboardNavigation, announceToScreenReader, announceSuccess } from '../../utils/accessibility'
 import {
+  ArrowLeft,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -14,8 +10,15 @@ import {
   ShoppingCart,
   Star,
 } from 'lucide-react'
-import { useState } from 'react'
+import { announceSuccess, announceToScreenReader, handleKeyboardNavigation } from '../../utils/accessibility'
+
+import type { Product } from '@/types/product'
+import { getBusinessStructuredData } from '@/lib/seo'
 import { toast } from 'sonner'
+import { useCartStore } from '@/store/cart'
+import { useSEO } from '@/hooks/useSEO'
+import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 
 interface ProductDetailsProps {
   product: Product
@@ -112,16 +115,25 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
           Skip to product details
         </a>
         
-        {/* Breadcrumb */}
-        <nav className="mb-8" aria-label="Breadcrumb navigation">
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <a href="/" className="hover:text-gray-900 transition-colors">
-              Home
-            </a>
-            <span>/</span>
-            <a href="/shop" className="hover:text-gray-900 transition-colors">
-              Products
-            </a>
+        {/* Back button + Breadcrumb */}
+        <div className="mb-8 flex flex-col gap-4">
+          <Link
+            to="/shop"
+            className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors w-fit focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded"
+            aria-label="Back to products"
+          >
+            <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
+            Back to products
+          </Link>
+          {/* <nav aria-label="Breadcrumb navigation">
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <a href="/" className="hover:text-gray-900 transition-colors">
+                Home
+              </a>
+              <span>/</span>
+              <a href="/shop" className="hover:text-gray-900 transition-colors">
+                Products
+              </a>
             <span>/</span>
             <a
               href={`/shop?category=${typeof product.category === 'string' ? product.category.toLowerCase() : product.category.slug}`}
@@ -132,7 +144,8 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
             <span>/</span>
             <span className="text-gray-900">{product.name}</span>
           </div>
-        </nav>
+          </nav> */}
+        </div>
 
         <main id="main-content" className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-16">
           {/* Product Images */}
@@ -214,7 +227,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
           <div className="space-y-6">
             {/* Header */}
             <div>
-              <h1 className="font-luxury-display text-3xl sm:text-4xl font-light text-gray-900 mb-2 tracking-luxury text-luxury-shadow">
+              <h1 className="font-luxury text-3xl sm:text-4xl font-bold text-gray-900 mb-2 tracking-luxury text-luxury-shadow">
                 {product.name}
               </h1>
               <p className="text-lg text-gray-600">
@@ -361,27 +374,15 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
 
             {/* Key Features */}
             <div className="space-y-3">
-              <h3 className="text-lg font-medium text-gray-900">Key Features</h3>
+              <h3 className="text-lg font-medium text-gray-900">Description</h3>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Check className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-600">Made with premium ingredients</span>
+                <p className="text-lg text-gray-600 leading-relaxed">{product.description}</p>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Check className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-600">Fresh baked daily</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Check className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-600">No artificial preservatives</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Check className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-600">Available for pickup or delivery</span>
-                </div>
+                
                 {product.isActive && product.stock > 0 && (
                   <div className="flex items-center space-x-2">
-                    <Check className="h-4 w-4 text-green-600" />
+                    {/* <Check className="h-4 w-4 text-green-600" /> */}
                     <span className="text-sm text-gray-600">
                       In stock ({product.stock} available)
                     </span>
@@ -411,7 +412,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
         </div>
 
         {/* Product Description */}
-        {product.description && (
+        {/* {product.description && (
           <div className="border-t border-gray-200 pt-16">
             <h2 className="text-2xl font-light text-gray-900 mb-8 tracking-wide">
               Product Description
@@ -420,7 +421,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               <p className="text-lg text-gray-600 leading-relaxed">{product.description}</p>
             </div>
           </div>
-        )}
+        )} */}
      
   </div>
 

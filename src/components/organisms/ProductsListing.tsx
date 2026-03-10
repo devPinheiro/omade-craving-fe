@@ -1,6 +1,7 @@
 import { useSEO } from '@/hooks/useSEO'
 import { getBusinessStructuredData } from '@/lib/seo'
 import { productsService } from '@/services/products'
+import { Link } from '@tanstack/react-router'
 import { useCartStore } from '@/store/cart'
 import type { Category, Product } from '@/types/product'
 import { AlertCircle, ChevronDown, Filter, Loader2, ShoppingCart } from 'lucide-react'
@@ -340,7 +341,11 @@ const ProductsListing = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           {sortedProducts.map((product) => (
             <div key={product.id} className="group">
-              <a href={`/products/${product.id}`} className="block">
+              <Link
+                to="/products/$productId"
+                params={{ productId: product.id }}
+                className="block"
+              >
                 <div className="aspect-square bg-gray-50 mb-4 overflow-hidden rounded-lg relative">
                   <img
                     src={product.imageUrl || '/placeholder-product.jpg'}
@@ -386,14 +391,17 @@ const ProductsListing = () => {
                     </button>
                   )}
                 </div>
-              </a>
+              </Link>
 
               <div className="text-center">
-                <a href={`/products/${product.id}`}>
+                <Link
+                  to="/products/$productId"
+                  params={{ productId: product.id }}
+                >
                   <h3 className="product-title text-lg font-medium text-gray-900 mb-2 hover:text-gray-600 transition-colors">
                     {product.name}
                   </h3>
-                </a>
+                </Link>
                 <div className="flex items-center justify-center space-x-2 mb-3">
                   <span className="price-text text-lg font-semibold text-gray-900">
                     {formatCurrency(product.price)}
@@ -411,12 +419,13 @@ const ProductsListing = () => {
 
                 {/* Mobile Actions */}
                 <div className="sm:hidden space-y-2">
-                  <a
-                    href={`/products/${product.id}`}
+                  <Link
+                    to="/products/$productId"
+                    params={{ productId: product.id }}
                     className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
                   >
                     <span className="text-sm font-medium">View Details</span>
-                  </a>
+                  </Link>
                   {product.isActive && product.stock > 0 ? (
                     <button
                       onClick={() => handleAddToCart(product)}

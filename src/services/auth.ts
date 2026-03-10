@@ -1,15 +1,14 @@
-import http from '@/lib/http'
 import type { AuthResponse, LoginCredentials, NormalizedAuthResponse, User } from '@/types/auth'
+
+import http from '@/lib/http'
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<NormalizedAuthResponse> {
-    console.log('🔐 Auth Service - Making login request to:', '/api/v1/auth/login')
     const response = await http.post('/api/v1/auth/login', credentials)
-    console.log('📥 Auth Service - Raw login response:', response.data)
+   
 
     const data: { data: AuthResponse } = response.data
-
-    console.log(data.data, '---->')
+ 
 
     // Normalize the response to match frontend expectations
     const normalized = {
