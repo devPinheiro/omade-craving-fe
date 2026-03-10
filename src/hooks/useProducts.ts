@@ -11,7 +11,7 @@ import type {
   UpdateProductData,
   UpdateStockData,
 } from '@/types/product'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 
 // Query Keys
 export const PRODUCT_QUERY_KEYS = {
@@ -33,7 +33,7 @@ export function useProducts(filters: ProductFilters = {}) {
   return useQuery({
     queryKey: PRODUCT_QUERY_KEYS.list(filters),
     queryFn: () => productsService.getProducts(filters),
-    onSuccess: (data) => {
+    onSuccess: () => {
       setFilters(filters)
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -268,4 +268,53 @@ export function useCategory(id: string) {
     enabled: !!id,
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
+}
+
+function asCategoryArray(data: unknown): Category[] {
+  if (Array.isArray(data)) return data
+  if (data && typeof data === 'object') {
+    const d = data as Record<string, unknown>
+    if (Array.isArray(d.data)) return d.data as Category[]
+    if (Array.isArray(d.categories)) return d.categories as Category[]
+  }
+  return []
+}
+
+/** Combined hook for Landing page: categories, featured products, and products grouped by category */
+export function useLandingProducts() {
+  const categoriesQuery = useCategories()
+  const productsQuery = useProducts({ limit: 20 })
+  const categories = asCategoryArray(categoriesQuery.data)
+  const topCategories = categories.slice(0, 4)
+
+  const categoryQueries = useQueries({
+    queries: topCategories.map((cat) => ({
+      queryKey: PRODUCT_QUERY_KEYS.list({ category: cat.slug || cat.name, limit: 4 }),
+      queryFn: () =>
+        productsService.getProductsByCategory(cat.slug || cat.name, { limit: 4 }),
+      enabled: !!categoriesQuery.data && topCategories.length > 0,
+      staleTime: 5 * 60 * 1000,
+    })),
+  })
+
+  const productsByCategory: Record<string, Product[]> = {}
+  topCategories.forEach((cat, i) => {
+    const name = cat.name
+    const data = categoryQueries[i]?.data
+    productsByCategory[name] = data?.products ?? []
+  })
+
+  const isLoading =
+    categoriesQuery.isLoading || productsQuery.isLoading || categoryQueries.some((q) => q.isLoading)
+  const isError =
+    categoriesQuery.isError || productsQuery.isError || categoryQueries.some((q) => q.isError)
+
+  return {
+    categories,
+    featuredProducts: productsQuery.data?.products ?? [],
+    productsByCategory,
+    isLoading,
+    isError,
+    error: categoriesQuery.error || productsQuery.error,
+  }
 }

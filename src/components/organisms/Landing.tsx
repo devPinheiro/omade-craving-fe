@@ -1,40 +1,23 @@
-import { useSEO } from '@/hooks/useSEO'
-import { getBusinessStructuredData } from '@/lib/seo'
-import { productsService } from '@/services/products'
-import { useCartStore } from '@/store/cart'
-import type { Category, Product } from '@/types/product'
-import {  ShoppingCart, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link } from '@tanstack/react-router'
+
+import type { Product } from '@/types/product'
+import { ShoppingCart } from 'lucide-react'
+import { getBusinessStructuredData } from '@/lib/seo'
 import { toast } from 'sonner'
-import { Menu, Search, X, Heart } from 'lucide-react'
-// import { CartDrawer } from '@/components/ui/CartDrawer'
-import OmadeLogo from "@/assets/Images/Omade Cravings.png"
-import { SearchOverlay } from '@/components/ui/SearchOverlay'
-
-
+import { useCartStore } from '@/store/cart'
+import { useLandingProducts } from '@/hooks/useProducts'
+import { useSEO } from '@/hooks/useSEO'
+import { subscribeNewsletter } from '@/services/newsletter'
 
 const Landing = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [productsByCategory, setProductsByCategory] = useState<Record<string, Product[]>>({})
-  const [loading, setLoading] = useState(true)
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [newsletterLoading, setNewsletterLoading] = useState(false)
+  const [newsletterSuccess, setNewsletterSuccess] = useState(false)
   const addItem = useCartStore((state) => state.addItem)
 
-    // Global keyboard shortcut for search
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        setSearchOpen(true)
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  const { productsByCategory, isLoading: loading } = useLandingProducts()
 
   useSEO({
     title: 'Omade Cravings - Artisanal Bakery | Fresh Handcrafted Breads & Pastries',
@@ -52,169 +35,27 @@ const Landing = () => {
       title: 'OMADE CRAVINGS',
       subtitle: 'Artisanal baked goods crafted with love and tradition',
       cta: 'SHOP NOW',
-      link: '#new-arrivals',
+      link: '/shop',
     },
-    {
-      id: 2,
-      image:
-        'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-      title: 'FRESH DAILY',
-      subtitle: 'Handcrafted breads and pastries made fresh every morning',
-      cta: 'EXPLORE BREADS',
-      link: '#bestsellers',
-    },
-    {
-      id: 3,
-      image:
-        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-      title: 'CUSTOM CAKES',
-      subtitle: 'Design your perfect celebration cake with our expert bakers',
-      cta: 'BUILD YOUR CAKE',
-      link: 'javascript:void(0)',
-    },
+    // {
+    //   id: 2,
+    //   image:
+    //     'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+    //   title: 'FRESH DAILY',
+    //   subtitle: 'Handcrafted breads and pastries made fresh every morning',
+    //   cta: 'EXPLORE BREADS',
+    //   link: '#bestsellers',
+    // },
+    // {
+    //   id: 3,
+    //   image:
+    //     'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+    //   title: 'CUSTOM CAKES',
+    //   subtitle: 'Design your perfect celebration cake with our expert bakers',
+    //   cta: 'BUILD YOUR CAKE',
+    //   link: 'javascript:void(0)',
+    // },
   ]
-
-  // Fallback static data
-  const fallbackFeaturedProducts: Product[] = [
-    {
-      id: 'fallback-1',
-      name: 'Artisan Sourdough',
-      description: 'Traditional sourdough with perfect crust',
-      price: 2500,
-      category: 'bread',
-      stock: 12,
-      imageUrl:
-        'https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-      isActive: true,
-      isFeatured: true,
-    },
-    {
-      id: 'fallback-2',
-      name: 'Chocolate Croissant',
-      description: 'Buttery croissant with rich chocolate',
-      price: 1800,
-      category: 'pastry',
-      stock: 8,
-      imageUrl:
-        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-      isActive: true,
-      isFeatured: true,
-    },
-    {
-      id: 'fallback-3',
-      name: 'Red Velvet Cake',
-      description: 'Classic red velvet with cream cheese frosting',
-      price: 8500,
-      category: 'cake',
-      stock: 3,
-      imageUrl:
-        'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-      isActive: true,
-      isFeatured: true,
-    },
-    {
-      id: 'fallback-4',
-      name: 'Honey Oat Bread',
-      description: 'Wholesome bread with natural honey',
-      price: 2200,
-      category: 'bread',
-      stock: 15,
-      imageUrl:
-        'https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-      isActive: true,
-      isFeatured: true,
-    },
-  ]
-
-  const fallbackCategoryProducts = {
-    Breads: [
-      {
-        id: 'bread-1',
-        name: 'Multigrain Loaf',
-        description: 'Healthy multigrain bread',
-        price: 2800,
-        category: 'bread',
-        stock: 10,
-        imageUrl:
-          'https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-        isActive: true,
-      },
-      {
-        id: 'bread-2',
-        name: 'French Baguette',
-        description: 'Classic French baguette',
-        price: 1500,
-        category: 'bread',
-        stock: 20,
-        imageUrl:
-          'https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-        isActive: true,
-      },
-    ],
-    Cakes: [
-      {
-        id: 'cake-1',
-        name: 'Vanilla Sponge',
-        description: 'Light and fluffy vanilla cake',
-        price: 7500,
-        category: 'cake',
-        stock: 5,
-        imageUrl:
-          'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-        isActive: true,
-      },
-      {
-        id: 'cake-2',
-        name: 'Chocolate Fudge',
-        description: 'Rich chocolate fudge cake',
-        price: 9200,
-        category: 'cake',
-        stock: 2,
-        imageUrl:
-          'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80',
-        isActive: true,
-      },
-    ],
-  }
-
-  // Fetch products and categories on mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const [categoriesData, productsData] = await Promise.all([
-          productsService.getCategories(),
-          productsService.getProducts({ limit: 20, isActive: true }),
-        ])
-
-        setCategories(categoriesData)
-        setFeaturedProducts(productsData.products.filter((p) => p.isFeatured))
-
-        // Group products by category
-        const grouped: Record<string, Product[]> = {}
-        for (const category of categoriesData.slice(0, 4)) {
-          // Limit to 4 categories
-          const categoryProducts = await productsService.getProducts({
-            category: category.name,
-            limit: 4,
-            isActive: true,
-          })
-          grouped[category.name] = categoryProducts.products
-        }
-        setProductsByCategory(grouped)
-      } catch (error) {
-        console.error('Failed to fetch landing page data:', error)
-        toast.error('Failed to load products')
-        // Set fallback data on error
-        setFeaturedProducts(fallbackFeaturedProducts)
-        setProductsByCategory(fallbackCategoryProducts)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
 
   // Hero carousel timer
   useEffect(() => {
@@ -223,7 +64,7 @@ const Landing = () => {
     }, 5000)
 
     return () => clearInterval(timer)
-  }, [heroSlides.length])
+  }, [])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -234,13 +75,15 @@ const Landing = () => {
   }
 
   const handleAddToCart = (product: Product) => {
+    const categoryLabel =
+      typeof product.category === 'string' ? product.category : product.category?.name ?? ''
     addItem({
       productId: product.id,
       name: product.name,
       image: product.imageUrl || '',
       basePrice: product.price,
       quantity: 1,
-      category: product.category,
+      category: categoryLabel,
     })
     toast.success(`${product.name} added to cart!`)
   }
@@ -249,7 +92,7 @@ const Landing = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4" />
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -259,138 +102,11 @@ const Landing = () => {
   return (
     <div>
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        {/* Announcement Bar */}
-        {/* <div className="bg-gray-100 text-center py-2">
-          <p className="text-sm text-gray-600">
-            Due to high demand, orders may take 3-5 business days to fulfill.
-          </p>
-        </div> */}
-
-        {/* Main Navigation */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <a href="/" className="block">
-              <img src={OmadeLogo} alt="Omade Cravings Logo" width={60}  className="inline-block" />
-                {/* <h1 className="font-brand text-xl sm:text-2xl font-bold text-black tracking-luxury hover:text-gray-700 transition-colors text-luxury-shadow">
-                  OMADE CRAVINGS
-                </h1> */}
-              </a>
-            </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex space-x-6 xl:space-x-8">
-              <a
-                href="/shop?category=bread"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                BREADS
-              </a>
-              <a
-                href="/shop?category=pastry"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                PASTRIES
-              </a>
-              <a
-                href="/shop?category=cake"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                CAKES
-              </a>
-              <a
-                href="/shop?category=seasonal"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                SEASONAL
-              </a>
-              <a
-                href="/about"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                ABOUT
-              </a>
-            </nav>
-
-            {/* Right Side Icons */}
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              {/* <button
-                type="button"
-                onClick={() => setSearchOpen(true)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-all duration-300 group hover:scale-110 active:scale-95"
-                aria-label="Search products (⌘K)"
-                title="Search products (⌘K)"
-              >
-                <Search className="h-5 w-5 text-gray-600 group-hover:text-gray-900 transition-all duration-300 group-hover:rotate-12" />
-              </button>
-              <CartDrawer /> */}
-
-              {/* Mobile menu button */}
-              <button
-                type="button"
-                className="lg:hidden p-2 -m-2"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-200 py-4">
-              <div className="flex flex-col space-y-2">
-                <a
-                  href="/shop?category=bread"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  BREADS
-                </a>
-                <a
-                  href="/shop?category=pastry"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  PASTRIES
-                </a>
-                <a
-                  href="/shop?category=cake"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  CAKES
-                </a>
-                <a
-                  href="/shop?category=seasonal"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  SEASONAL
-                </a>
-                <a
-                  href="/about"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  ABOUT
-                </a>
-                <a
-                  href="/feedback"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  FEEDBACK
-                </a>
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
-
-           {/* Search Overlay */}
-      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-
+      
 
       {/* Hero Carousel Section - Salt Lagos Style with Animation */}
-      <section className="relative">
-        <div className="relative h-[70vh] overflow-hidden">
+      <section className="">
+        <div className="hidden lg:flex  h-[20vh] lg:h-[100vh] overflow-hidden lg:-pt-32">
           {/* Carousel Images */}
           {heroSlides.map((slide, index) => (
             <div
@@ -404,15 +120,15 @@ const Landing = () => {
                 alt={slide.title}
                 className="w-full h-full object-cover animate-scale-in"
               />
-              <div className="absolute inset-0 bg-black opacity-50" />
+              <div className="absolute inset-0 bg-black opacity-60" />
 
-              {/* Slide Content */}
+             
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-white px-4 max-w-4xl mx-auto">
-                  <h1 className="font-luxury-display text-5xl md:text-7xl lg:text-9xl font-bold mb-6 animate-fade-in tracking-luxury text-luxury-shadow">
+                  <h1 className="font-luxury-accent text-5xl md:text-7xl lg:text-9xl font-bold mb-6 animate-fade-in tracking-luxury text-luxury-shadow">
                     {slide.title}
                   </h1>
-                  <p className="font-luxury-serif text-lg md:text-xl mb-8 font-light animate-slide-up tracking-premium">
+                  <p className="font-brand text-lg md:text-3xl mb-8 font-light animate-slide-up tracking-premium">
                     {slide.subtitle}
                   </p>
                   <a
@@ -461,12 +177,12 @@ const Landing = () => {
       </section>
 
       {/* Featured Products Section */}
-      {(featuredProducts.length > 0 ? featuredProducts : fallbackFeaturedProducts).length > 0 && (
+      {/* {(featuredProducts.length > 0 ? featuredProducts : fallbackFeaturedProducts).length > 0 && (
         <section id="new-arrivals" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 tracking-wide">
-                FEATURED PRODUCTS
+              <h2 className="font-brand  text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 tracking-wide">
+                New Arrivals
               </h2>
               <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
                 Discover our handpicked selection of the finest artisanal creations, crafted with
@@ -487,14 +203,14 @@ const Landing = () => {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
 
-                        {/* Product Labels */}
-                        <div className="absolute top-3 left-3">
+                        
+                        {/* <div className="absolute top-3 left-3">
                           <div className="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
                             Featured
                           </div>
-                        </div>
+                        </div> 
 
-                        {/* Out of Stock Overlay */}
+                        
                         {(product.stock === 0 || !product.isActive) && (
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-sm">
                             <div className="bg-white px-4 py-2 rounded-lg shadow-lg">
@@ -505,7 +221,7 @@ const Landing = () => {
                           </div>
                         )}
 
-                        {/* Quick Add to Cart Button */}
+               
                         {product.isActive && product.stock > 0 && (
                           <button
                             type="button"
@@ -529,7 +245,7 @@ const Landing = () => {
                           {product.name}
                         </h3>
                       </a>
-                      <div className="flex items-center justify-center space-x-1 mb-2">
+                      {/* <div className="flex items-center justify-center space-x-1 mb-2">
                         {Array.from({ length: 5 }, (_, i) => (
                           <Star
                             key={`featured-star-${product.id}-${i}`}
@@ -537,7 +253,7 @@ const Landing = () => {
                           />
                         ))}
                         <span className="text-sm text-gray-500 ml-2">(4.8)</span>
-                      </div>
+                      </div> 
                       <div className="flex items-center justify-center space-x-2 mb-3">
                         <span className="text-lg font-semibold text-gray-900">
                           {formatCurrency(product.price)}
@@ -556,19 +272,17 @@ const Landing = () => {
             <div className="text-center mt-12">
               <a
                 href="/shop"
-                className="inline-block bg-black text-white px-8 py-3 font-medium hover:bg-gray-800 transition-colors"
+                className="inline-block bg-orange-600 rounded-full text-white px-8 py-3 font-medium hover:bg-gray-800 transition-colors"
               >
                 See All Products
               </a>
             </div>
           </div>
         </section>
-      )}
+      )} */}
 
       {/* Category Sections */}
-      {Object.entries(
-        Object.keys(productsByCategory).length > 0 ? productsByCategory : fallbackCategoryProducts
-      ).map(([categoryName, products], index) => {
+      {Object.entries(productsByCategory).map(([categoryName, products], index) => {
         if (products.length === 0) return null
 
         const bgClass = index % 2 === 1 ? 'bg-gray-50' : 'bg-white'
@@ -580,11 +294,11 @@ const Landing = () => {
           >
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-8 sm:mb-12">
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 tracking-wide">
-                  {categoryName.toUpperCase()}
+                <h2 className="font-brand  text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 tracking-wide">
+                  New Arrivals
                 </h2>
                 <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-                  Discover our exquisite selection of {categoryName.toLowerCase()} crafted with the
+                  Discover our exquisite selection of New Arrivals crafted with the
                   finest ingredients and traditional techniques.
                 </p>
               </div>
@@ -592,7 +306,11 @@ const Landing = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 {products.slice(0, 4).map((product: Product) => (
                   <div key={product.id} className="group">
-                    <a href={`/products/${product.id}`} className="block">
+                    <Link
+                      to="/products/$productId"
+                      params={{ productId: product.id }}
+                      className="block"
+                    >
                       <div className="aspect-square bg-gray-50 mb-4 overflow-hidden rounded-lg relative">
                         <img
                           src={product.imageUrl || '/placeholder-product.jpg'}
@@ -602,11 +320,11 @@ const Landing = () => {
 
                         {/* Product Labels */}
                         <div className="absolute top-3 left-3 space-y-1">
-                          {product.isFeatured && (
+                          {/* {product.isFeatured && (
                             <div className="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
                               Featured
                             </div>
-                          )}
+                          )} */}
                           {product.stock > 0 && product.stock <= (product.minStock || 5) && (
                             <div className="px-2 py-1 text-xs font-medium rounded bg-orange-100 text-orange-800">
                               Low Stock
@@ -641,15 +359,18 @@ const Landing = () => {
                           </button>
                         )}
                       </div>
-                    </a>
+                    </Link>
 
                     <div className="text-center">
-                      <a href={`/products/${product.id}`}>
+                      <Link
+                        to="/products/$productId"
+                        params={{ productId: product.id }}
+                      >
                         <h3 className="text-lg font-medium text-gray-900 mb-2 hover:text-gray-600 transition-colors">
                           {product.name}
                         </h3>
-                      </a>
-                      <div className="flex items-center justify-center space-x-1 mb-2">
+                      </Link>
+                      {/* <div className="flex items-center justify-center space-x-1 mb-2">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={`${product.id}-star-${i}`}
@@ -657,7 +378,7 @@ const Landing = () => {
                           />
                         ))}
                         <span className="text-sm text-gray-500 ml-2">(4.8)</span>
-                      </div>
+                      </div> */}
                       <div className="flex items-center justify-center space-x-2 mb-3">
                         <span className="text-lg font-semibold text-gray-900">
                           {formatCurrency(product.price)}
@@ -676,9 +397,9 @@ const Landing = () => {
               <div className="text-center mt-12">
                 <a
                   href={`/shop?category=${categoryName.toLowerCase()}`}
-                  className="inline-block bg-black text-white px-8 py-3 font-medium hover:bg-gray-800 transition-colors"
+                  className="inline-block bg-orange-600 rounded-full text-white px-8 py-3 font-medium hover:bg-gray-800 transition-colors"
                 >
-                  See All {categoryName}
+                  See All New Arrivals
                 </a>
               </div>
             </div>
@@ -687,7 +408,7 @@ const Landing = () => {
       })}
 
       {/* Who We Are Section */}
-      <section id="who-we-are" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
+      <section id="who-we-are" className="py-16 sm:py-32  px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 sm:mb-8 tracking-wide">
             WHO WE ARE
@@ -712,11 +433,11 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Build Your Cake Section - Salt Lagos Style */}
-      <section id="build-your-cake" className="py-64 px-4 sm:px-6 lg:px-8 bg-gray-100">
+      {/* Build Your Cake Section - Salt Lagos Style
+     <section id="build-your-cake" className="py-64 px-4 sm:px-6 lg:px-8 bg-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Content */}
+            
             <div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 tracking-wide">
                 BUILD YOUR CAKE
@@ -734,7 +455,7 @@ const Landing = () => {
               </a>
             </div>
 
-            {/* Image */}
+        
             <div>
               <div className="aspect-[4/3] bg-white overflow-hidden">
                 <img
@@ -746,10 +467,10 @@ const Landing = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Publications Section - Salt Lagos Style */}
-      <section id="publications" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      {/* <section id="publications" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 tracking-wide">
@@ -820,10 +541,10 @@ const Landing = () => {
             </article>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Newsletter Section */}
-      <section id="newsletter" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gray-100">
+      <section id="newsletter" className="py-12 sm:py-32 px-4 sm:px-6 lg:px-8 bg-gray-100">
         <div className="max-w-2xl mx-auto text-center">
           <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 tracking-wide">
             STAY IN THE KNOW
@@ -832,20 +553,50 @@ const Landing = () => {
             Subscribe to our newsletter for exclusive recipes, baking tips, and first access to new
             products.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto px-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-900 text-sm sm:text-base"
-              onClick={(e) => e.preventDefault()}
-            />
-            <button
-              type="button"
-              className="px-6 sm:px-8 py-3 bg-black text-white hover:bg-gray-800 transition-colors font-medium text-sm sm:text-base"
+          {newsletterSuccess ? (
+            <p className="text-green-700 font-medium px-4">
+              Thanks for subscribing! Check your inbox to confirm.
+            </p>
+          ) : (
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault()
+                if (newsletterLoading || !newsletterEmail.trim()) return
+                setNewsletterLoading(true)
+                try {
+                  await subscribeNewsletter(newsletterEmail)
+                  setNewsletterSuccess(true)
+                  setNewsletterEmail('')
+                  toast.success('Subscribed! Check your email to confirm.')
+                } catch (err) {
+                  const message =
+                    err instanceof Error ? err.message : 'Subscription failed. Try again.'
+                  toast.error(message)
+                } finally {
+                  setNewsletterLoading(false)
+                }
+              }}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto px-4"
             >
-              SUBSCRIBE
-            </button>
-          </div>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                disabled={newsletterLoading}
+                required
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm sm:text-base disabled:opacity-60"
+                aria-label="Email for newsletter"
+              />
+              <button
+                type="submit"
+                disabled={newsletterLoading || !newsletterEmail.trim()}
+                className="px-6 sm:px-8 py-3 bg-black text-white hover:bg-gray-800 transition-colors font-medium text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {newsletterLoading ? 'Subscribing…' : 'SUBSCRIBE'}
+              </button>
+            </form>
+          )}
         </div>
       </section>
     </div>

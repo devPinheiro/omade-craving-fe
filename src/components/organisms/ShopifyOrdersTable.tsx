@@ -1,9 +1,18 @@
 import { OrderStatusModal } from '@/components/organisms/OrderStatusModal'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useOrders, useUpdateOrderStatus } from '@/hooks/useOrders'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@radix-ui/react-dropdown-menu'
+import { useOrders, useDeleteOrder, useUpdateOrderStatus } from '@/hooks/useOrders'
+import { ordersService } from '@/services/orders'
 import { usePermissions } from '@/hooks/usePermissions'
 import type { Order, OrderFilters, OrderStatus } from '@/types/order'
+import { Link } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import {
   ArrowUpDown,
   CheckCircle,
@@ -13,9 +22,11 @@ import {
   Filter,
   MoreHorizontal,
   Package,
+  Pencil,
   RefreshCw,
   Search,
   ShoppingBag,
+  Trash2,
   Truck,
   X,
 } from 'lucide-react'
@@ -32,6 +43,7 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
   const { data, isLoading, error } = useOrders(currentFilters)
   const updateStatusMutation = useUpdateOrderStatus()
+  const deleteOrderMutation = useDeleteOrder()
   const hasPermission = usePermissions()
 
   const canEdit = hasPermission('orders:write') || hasPermission('admin:access')
@@ -56,11 +68,11 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
     const colors: Record<string, string> = {
       pending: 'bg-yellow-100 text-yellow-800',
       confirmed: 'bg-blue-100 text-blue-800',
-      processing: 'bg-blue-100 text-blue-800',
-      shipped: 'bg-purple-100 text-purple-800',
-      delivered: 'bg-green-100 text-green-800',
+      preparing: 'bg-blue-100 text-blue-800',
+      ready: 'bg-green-100 text-green-800',
+      picked_up: 'bg-green-100 text-green-800',
       cancelled: 'bg-red-100 text-red-800',
-      refunded: 'bg-gray-100 text-gray-800',
+      no_show: 'bg-gray-100 text-gray-800',
     }
     return colors[status] || 'bg-gray-100 text-gray-800'
   }
@@ -69,11 +81,11 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
     const icons: Record<string, any> = {
       pending: Clock,
       confirmed: Package,
-      processing: Package,
-      shipped: Truck,
-      delivered: CheckCircle,
+      preparing: Package,
+      ready: CheckCircle,
+      picked_up: CheckCircle,
       cancelled: X,
-      refunded: RefreshCw,
+      no_show: Clock,
     }
     const Icon = icons[status] || Clock
     return <Icon className="h-3 w-3" />
@@ -89,6 +101,80 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
     setEditingOrder(null)
   }
 
+  const handleDeleteOrder = async (order: Order) => {
+    if (!confirm(`Cancel and delete order #${order.orderNumber}? This cannot be undone.`)) return
+    try {
+      await deleteOrderMutation.mutateAsync(order.id)
+      toast.success('Order deleted')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to delete order'
+      toast.error(message)
+    }
+  }
+
+  const [isExporting, setIsExporting] = useState(false)
+
+  function downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  function ordersToCSV(orders: Order[]): string {
+    const headers = [
+      'Order #',
+      'Date',
+      'Customer',
+      'Email',
+      'Status',
+      'Total (NGN)',
+      'Items',
+    ]
+    const rows = orders.map((o) => [
+      o.orderNumber,
+      new Date(o.createdAt).toLocaleDateString(),
+      o.customer ? `${o.customer.firstName} ${o.customer.lastName}` : 'Guest',
+      o.customer?.email || o.email || '',
+      o.status,
+      o.total.toFixed(2),
+      o.items.map((i) => `${i.quantity}x ${i.product.name}`).join('; '),
+    ])
+    const escapeCsv = (v: string) =>
+      /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v
+    const csv = [headers.join(','), ...rows.map((r) => r.map(escapeCsv).join(','))].join('\n')
+    return csv
+  }
+
+  const handleExportAll = async () => {
+    setIsExporting(true)
+    try {
+      const blob = await ordersService.exportOrders(currentFilters)
+      const ext = blob.type?.includes('sheet') ? 'xlsx' : 'csv'
+      downloadBlob(blob, `orders-export-${new Date().toISOString().slice(0, 10)}.${ext}`)
+      toast.success('Orders exported successfully')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Export failed'
+      toast.error(msg)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleExportSelected = () => {
+    if (!data?.orders || selectedOrders.length === 0) {
+      toast.error('No orders selected')
+      return
+    }
+    const orders = data.orders.filter((o) => selectedOrders.includes(o.id))
+    const csv = ordersToCSV(orders)
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    downloadBlob(blob, `orders-selected-${new Date().toISOString().slice(0, 10)}.csv`)
+    toast.success(`Exported ${orders.length} order(s)`)
+  }
+
   const handleStatusUpdate = async (orderId: string, newStatus: OrderStatus, notes?: string) => {
     try {
       await updateStatusMutation.mutateAsync({
@@ -96,10 +182,13 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
         status: newStatus,
         notes,
       })
+      toast.success('Order status updated successfully')
       setShowStatusModal(false)
       setEditingOrder(null)
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to update order status:', error)
+      const message = error instanceof Error ? error.message : 'Failed to update order status'
+      toast.error(message)
     }
   }
 
@@ -150,11 +239,11 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
             <option value="">All statuses</option>
             <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
+            <option value="preparing">Preparing</option>
+            <option value="ready">Ready</option>
+            <option value="picked_up">Picked up</option>
             <option value="cancelled">Cancelled</option>
-            <option value="refunded">Refunded</option>
+            <option value="no_show">No show</option>
           </select>
 
           <Button variant="outline" size="sm">
@@ -164,8 +253,17 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportAll}
+            disabled={isExporting}
+          >
+            {isExporting ? (
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-2" />
+            )}
             Export
           </Button>
         </div>
@@ -183,14 +281,20 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
                     {selectedOrders.length} order{selectedOrders.length > 1 ? 's' : ''} selected
                   </span>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleExportSelected}
+                      disabled={isExporting}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
                       Export selected
                     </Button>
                     <Button variant="outline" size="sm">
-                      Mark as shipped
+                      Mark as ready
                     </Button>
                     <Button variant="outline" size="sm">
-                      Mark as delivered
+                      Mark as picked up
                     </Button>
                   </div>
                 </div>
@@ -311,23 +415,44 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
                       </td>
 
                       <td className="py-4 px-4">
-                        <div className="flex items-center space-x-2">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          {canEdit && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditOrder(order)}
-                            >
-                              <Package className="h-4 w-4" />
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" aria-label="Order actions">
+                              <MoreHorizontal className="h-4 w-4" />
                             </Button>
-                          )}
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </div>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="min-w-[160px] rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+                          >
+                            <DropdownMenuItem asChild>
+                              <Link
+                                to="/order-confirmation"
+                                search={{ orderId: order.id }}
+                                className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+                              >
+                                <Eye className="h-4 w-4" />
+                                View
+                              </Link>
+                            </DropdownMenuItem>
+                            {canEdit && (
+                              <DropdownMenuItem
+                                onSelect={() => handleEditOrder(order)}
+                                className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+                              >
+                                <Pencil className="h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                              onSelect={() => handleDeleteOrder(order)}
+                              className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 focus:outline-none"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
                     </tr>
                   ))}
@@ -395,6 +520,7 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
         isOpen={showStatusModal}
         onStatusUpdate={handleStatusUpdate}
         onCancel={handleCloseModal}
+        isUpdating={updateStatusMutation.isPending}
       />
     </div>
   )

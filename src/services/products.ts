@@ -14,32 +14,62 @@ import type {
   UpdateStockData,
 } from '@/types/product'
 
-// Transform API response fields from snake_case to camelCase
-function transformProduct(apiProduct: any): Product {
+/** API product shape: snake_case with optional fields */
+interface ApiProduct {
+  id: string
+  name: string
+  description?: string
+  price: string | number
+  category?: string
+  stock?: number
+  image_url?: string
+  imageUrl?: string
+  is_active?: boolean
+  isActive?: boolean
+  is_customizable?: boolean
+  is_featured?: boolean
+  isFeatured?: boolean
+  sku?: string
+  cost?: string | number
+  min_stock?: number
+  minStock?: number
+  images?: string[]
+  tags?: string[]
+  createdAt?: string
+  created_at?: string
+  updatedAt?: string
+  updated_at?: string
+  [key: string]: unknown
+}
+
+/** Transform API response (snake_case) to Product (camelCase) */
+function transformProduct(apiProduct: ApiProduct): Product {
   return {
     id: apiProduct.id,
     name: apiProduct.name,
-    description: apiProduct.description,
+    description: apiProduct.description ?? '',
     price:
-      typeof apiProduct.price === 'string' ? Number.parseFloat(apiProduct.price) : apiProduct.price,
+      typeof apiProduct.price === 'string'
+        ? Number.parseFloat(apiProduct.price)
+        : Number(apiProduct.price ?? 0),
     cost: apiProduct.cost
       ? typeof apiProduct.cost === 'string'
         ? Number.parseFloat(apiProduct.cost)
         : apiProduct.cost
       : undefined,
-    sku: apiProduct.sku || '',
-    category: apiProduct.category || '',
+    sku: apiProduct.sku ?? '',
+    category: apiProduct.category ?? '',
     imageUrl: apiProduct.image_url || apiProduct.imageUrl,
-    images: apiProduct.images || [],
-    stock: apiProduct.stock || 0,
-    minStock: apiProduct.min_stock || apiProduct.minStock,
+    images: apiProduct.images ?? [],
+    stock: apiProduct.stock ?? 0,
+    minStock: apiProduct.min_stock ?? apiProduct.minStock,
     isActive: apiProduct.is_active ?? apiProduct.isActive ?? true,
     isFeatured: apiProduct.is_featured ?? apiProduct.isFeatured ?? false,
-    weight: apiProduct.weight,
-    dimensions: apiProduct.dimensions,
-    tags: apiProduct.tags || [],
-    createdAt: apiProduct.createdAt || apiProduct.created_at,
-    updatedAt: apiProduct.updatedAt || apiProduct.updated_at,
+    weight: undefined,
+    dimensions: undefined,
+    tags: apiProduct.tags ?? [],
+    createdAt: apiProduct.createdAt ?? apiProduct.created_at ?? '',
+    updatedAt: apiProduct.updatedAt ?? apiProduct.updated_at ?? '',
   }
 }
 
@@ -94,15 +124,16 @@ export const productsService = {
 
     const response = await http.get(`/api/v1/products?${params.toString()}`)
 
-    // Handle API response structure and transform field names
-    const apiData = response.data.data || response.data
+    // Handle API response: { data: {...} } or { products, total, page, limit, totalPages }
+    const raw = response.data.data || response.data
+    const products = Array.isArray(raw.products) ? raw.products.map(transformProduct) : []
     return {
-      products: apiData.products.map(transformProduct),
+      products,
       pagination: {
-        page: apiData.page,
-        limit: apiData.limit,
-        total: apiData.total,
-        totalPages: apiData.totalPages,
+        page: raw.page ?? 1,
+        limit: raw.limit ?? 20,
+        total: raw.total ?? products.length,
+        totalPages: raw.totalPages ?? 1,
       },
     }
   },

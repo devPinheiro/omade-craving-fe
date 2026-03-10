@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
-import { Route as OrderConfirmationRouteImport } from './routes/order-confirmation'
 import { Route as LandingRouteImport } from './routes/landing'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -23,6 +22,7 @@ import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as UnauthenticatedOrderConfirmationRouteImport } from './routes/_unauthenticated/order-confirmation'
 import { Route as UnauthenticatedComingSoonRouteImport } from './routes/_unauthenticated/comingSoon'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AdminProductsRouteImport } from './routes/_admin/products'
@@ -34,11 +34,6 @@ import { Route as AdminCategoriesRouteImport } from './routes/_admin/categories'
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrderConfirmationRoute = OrderConfirmationRouteImport.update({
-  id: '/order-confirmation',
-  path: '/order-confirmation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandingRoute = LandingRouteImport.update({
@@ -98,6 +93,12 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+const UnauthenticatedOrderConfirmationRoute =
+  UnauthenticatedOrderConfirmationRouteImport.update({
+    id: '/order-confirmation',
+    path: '/order-confirmation',
+    getParentRoute: () => UnauthenticatedRoute,
+  } as any)
 const UnauthenticatedComingSoonRoute =
   UnauthenticatedComingSoonRouteImport.update({
     id: '/comingSoon',
@@ -143,7 +144,6 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/feedback': typeof FeedbackRoute
   '/landing': typeof LandingRoute
-  '/order-confirmation': typeof OrderConfirmationRoute
   '/shop': typeof ShopRoute
   '/categories': typeof AdminCategoriesRoute
   '/customers': typeof AdminCustomersRoute
@@ -152,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AdminProductsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/comingSoon': typeof UnauthenticatedComingSoonRoute
+  '/order-confirmation': typeof UnauthenticatedOrderConfirmationRoute
   '/auth/login': typeof AuthLoginRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -163,7 +164,6 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/feedback': typeof FeedbackRoute
   '/landing': typeof LandingRoute
-  '/order-confirmation': typeof OrderConfirmationRoute
   '/shop': typeof ShopRoute
   '/categories': typeof AdminCategoriesRoute
   '/customers': typeof AdminCustomersRoute
@@ -172,6 +172,7 @@ export interface FileRoutesByTo {
   '/products': typeof AdminProductsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/comingSoon': typeof UnauthenticatedComingSoonRoute
+  '/order-confirmation': typeof UnauthenticatedOrderConfirmationRoute
   '/auth/login': typeof AuthLoginRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -187,7 +188,6 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/feedback': typeof FeedbackRoute
   '/landing': typeof LandingRoute
-  '/order-confirmation': typeof OrderConfirmationRoute
   '/shop': typeof ShopRoute
   '/_admin/categories': typeof AdminCategoriesRoute
   '/_admin/customers': typeof AdminCustomersRoute
@@ -196,6 +196,7 @@ export interface FileRoutesById {
   '/_admin/products': typeof AdminProductsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_unauthenticated/comingSoon': typeof UnauthenticatedComingSoonRoute
+  '/_unauthenticated/order-confirmation': typeof UnauthenticatedOrderConfirmationRoute
   '/auth/login': typeof AuthLoginRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -209,7 +210,6 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/feedback'
     | '/landing'
-    | '/order-confirmation'
     | '/shop'
     | '/categories'
     | '/customers'
@@ -218,6 +218,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/dashboard'
     | '/comingSoon'
+    | '/order-confirmation'
     | '/auth/login'
     | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
@@ -229,7 +230,6 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/feedback'
     | '/landing'
-    | '/order-confirmation'
     | '/shop'
     | '/categories'
     | '/customers'
@@ -238,6 +238,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/dashboard'
     | '/comingSoon'
+    | '/order-confirmation'
     | '/auth/login'
     | '/products/$productId'
   id:
@@ -252,7 +253,6 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/feedback'
     | '/landing'
-    | '/order-confirmation'
     | '/shop'
     | '/_admin/categories'
     | '/_admin/customers'
@@ -261,6 +261,7 @@ export interface FileRouteTypes {
     | '/_admin/products'
     | '/_authenticated/dashboard'
     | '/_unauthenticated/comingSoon'
+    | '/_unauthenticated/order-confirmation'
     | '/auth/login'
     | '/products/$productId'
   fileRoutesById: FileRoutesById
@@ -276,7 +277,6 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   FeedbackRoute: typeof FeedbackRoute
   LandingRoute: typeof LandingRoute
-  OrderConfirmationRoute: typeof OrderConfirmationRoute
   ShopRoute: typeof ShopRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
@@ -288,13 +288,6 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/order-confirmation': {
-      id: '/order-confirmation'
-      path: '/order-confirmation'
-      fullPath: '/order-confirmation'
-      preLoaderRoute: typeof OrderConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landing': {
@@ -381,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_unauthenticated/order-confirmation': {
+      id: '/_unauthenticated/order-confirmation'
+      path: '/order-confirmation'
+      fullPath: '/order-confirmation'
+      preLoaderRoute: typeof UnauthenticatedOrderConfirmationRouteImport
+      parentRoute: typeof UnauthenticatedRoute
+    }
     '/_unauthenticated/comingSoon': {
       id: '/_unauthenticated/comingSoon'
       path: '/comingSoon'
@@ -465,10 +465,12 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface UnauthenticatedRouteChildren {
   UnauthenticatedComingSoonRoute: typeof UnauthenticatedComingSoonRoute
+  UnauthenticatedOrderConfirmationRoute: typeof UnauthenticatedOrderConfirmationRoute
 }
 
 const UnauthenticatedRouteChildren: UnauthenticatedRouteChildren = {
   UnauthenticatedComingSoonRoute: UnauthenticatedComingSoonRoute,
+  UnauthenticatedOrderConfirmationRoute: UnauthenticatedOrderConfirmationRoute,
 }
 
 const UnauthenticatedRouteWithChildren = UnauthenticatedRoute._addFileChildren(
@@ -496,7 +498,6 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   FeedbackRoute: FeedbackRoute,
   LandingRoute: LandingRoute,
-  OrderConfirmationRoute: OrderConfirmationRoute,
   ShopRoute: ShopRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }

@@ -1,6 +1,7 @@
 import { productsService } from '@/services/products'
 import { useCartStore } from '@/store/cart'
 import type { Product } from '@/types/product'
+import { Link } from '@tanstack/react-router'
 import { ArrowRight, Clock, Search, TrendingUp, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -269,7 +270,12 @@ const handleClearSearch = () => {
                       key={product.id}
                       className="group cursor-pointer transform transition-all duration-300 hover:scale-105 search-result-item"
                     >
-                      <a href={`/products/${product.id}`} className="block">
+                      <Link
+                        to="/products/$productId"
+                        params={{ productId: product.id }}
+                        onClick={onClose}
+                        className="block"
+                      >
                         <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-4 relative">
                           <img
                             src={product.imageUrl || '/placeholder-product.jpg'}
@@ -305,14 +311,18 @@ const handleClearSearch = () => {
                             </button>
                           )}
                         </div>
-                      </a>
+                      </Link>
 
                       <div className="space-y-2">
-                        <a href={`/products/${product.id}`}>
+                        <Link
+                          to="/products/$productId"
+                          params={{ productId: product.id }}
+                          onClick={onClose}
+                        >
                           <h4 className="font-medium text-gray-900 hover:text-gray-600 transition-colors line-clamp-2">
                             {product.name}
                           </h4>
-                        </a>
+                        </Link>
                         <p className="text-sm text-gray-500">
                           {typeof product.category === 'string'
                             ? product.category

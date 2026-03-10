@@ -1,14 +1,14 @@
 import http from '@/lib/http'
-import type {
-  CreateOrderData,
+import {
   FulfillmentStatus,
-  Order,
-  OrderFilters,
-  OrderStats,
-  OrderStatus,
-  PaginatedOrders,
-  PaymentStatus,
-  UpdateOrderData,
+  type CreateOrderData,
+  type Order,
+  type OrderFilters,
+  type OrderStats,
+  type OrderStatus,
+  type PaginatedOrders,
+  type PaymentStatus,
+  type UpdateOrderData,
 } from '@/types/order'
 
 export const ordersService = {
@@ -105,7 +105,75 @@ export const ordersService = {
 
   async getOrderById(id: string): Promise<Order> {
     const response = await http.get(`/api/v1/orders/${id}`)
-    return response.data
+    const order = response.data.data || response.data
+
+    if (!order) throw new Error('Order not found')
+
+    return {
+      id: order.id,
+      orderNumber: order.order_number,
+      customerId: order.user_id,
+      customer: order.user
+        ? {
+            id: order.user.id,
+            firstName: order.user.firstName || order.guest_name?.split(' ')[0] || '',
+            lastName: order.user.lastName || order.guest_name?.split(' ').slice(1).join(' ') || '',
+            email: order.user.email || order.guest_email,
+            phone: order.user.phone || order.guest_phone,
+          }
+        : {
+            id: '',
+            firstName: order.guest_name?.split(' ')[0] || '',
+            lastName: order.guest_name?.split(' ').slice(1).join(' ') || '',
+            email: order.guest_email,
+            phone: order.guest_phone,
+          },
+      email: order.guest_email,
+      phone: order.guest_phone,
+      items:
+        order.orderItems?.map((item: any) => ({
+          id: item.id,
+          productId: item.product_id,
+          product: {
+            id: item.product?.id,
+            name: item.product?.name,
+            imageUrl: item.product?.image_url,
+            price: Number.parseFloat(item.product?.price || '0'),
+          },
+          quantity: item.quantity,
+          price: Number.parseFloat(item.unit_price || '0'),
+          total: Number.parseFloat(item.subtotal || '0'),
+        })) || [],
+      subtotal:
+        Number.parseFloat(order.total_amount || '0') - Number.parseFloat(order.discount_amount || '0'),
+      shipping: 0,
+      tax: 0,
+      discount: Number.parseFloat(order.discount_amount || '0'),
+      total: Number.parseFloat(order.total_amount || '0'),
+      currency: 'NGN',
+      status: order.status,
+      paymentStatus: order.payment_status,
+      fulfillmentStatus: FulfillmentStatus.UNFULFILLED,
+      shippingAddress: {
+        firstName: order.guest_name?.split(' ')[0] || '',
+        lastName: order.guest_name?.split(' ').slice(1).join(' ') || '',
+        company: '',
+        address1: order.shipping_address?.address1 || '',
+        address2: order.shipping_address?.address2 || '',
+        city: order.shipping_address?.city || '',
+        province: order.shipping_address?.province || '',
+        country: 'Nigeria',
+        zip: order.shipping_address?.zip || '',
+        phone: order.guest_phone,
+      },
+      notes: order.staff_notes,
+      tags: [],
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      processedAt: undefined,
+      cancelledAt: undefined,
+      refunds: [],
+    }
   },
 
   async getOrderByNumber(orderNumber: string): Promise<Order> {
@@ -193,8 +261,9 @@ export const ordersService = {
   },
 
   async cancelOrder(id: string, reason?: string): Promise<Order> {
-    const response = await http.patch(`/api/v1/orders/${id}/cancel`, { reason })
-    return response.data
+    const response = await http.post(`/api/v1/orders/${id}/cancel`, { reason })
+    const raw = response.data.data || response.data
+    return mapOrderFromApi(raw)
   },
 
   async fulfillOrder(id: string, trackingNumber?: string): Promise<Order> {
@@ -278,14 +347,90 @@ export const ordersService = {
     return response.data
   },
 
-  // Update order status with notes
+  // Update order status with notes (sends staff_notes to backend; triggers email notification)
   async updateOrderStatus(data: {
     orderId: string
     status: OrderStatus
     notes?: string
   }): Promise<Order> {
-    const { orderId, ...updateData } = data
-    const response = await http.patch(`/api/v1/orders/${orderId}/status`, updateData)
-    return response.data
+    const { orderId, status, notes } = data
+    const body: Record<string, unknown> = { status }
+    if (notes?.trim()) body.staff_notes = notes.trim()
+    const response = await http.patch(`/api/v1/orders/${orderId}/status`, body)
+    const raw = response.data.data || response.data
+    return mapOrderFromApi(raw)
   },
+}
+
+/** Map API order (snake_case) to frontend Order type */
+function mapOrderFromApi(order: any): Order {
+  const userName = order.user?.name ?? order.user?.firstName ?? ''
+  const nameParts = typeof userName === 'string' ? userName.split(/\s+/) : []
+  const firstName = order.user?.firstName ?? nameParts[0] ?? ''
+  const lastName = order.user?.lastName ?? nameParts.slice(1).join(' ') ?? ''
+  return {
+    id: order.id,
+    orderNumber: order.order_number,
+    customerId: order.user_id,
+    customer: order.user
+      ? {
+          id: order.user.id,
+          firstName: firstName || order.guest_name?.split(' ')[0] || '',
+          lastName: lastName || order.guest_name?.split(' ').slice(1).join(' ') || '',
+          email: order.user.email || order.guest_email,
+          phone: order.user.phone || order.guest_phone,
+        }
+      : {
+          id: '',
+          firstName: order.guest_name?.split(' ')[0] || '',
+          lastName: order.guest_name?.split(' ').slice(1).join(' ') || '',
+          email: order.guest_email,
+          phone: order.guest_phone,
+        },
+    email: order.guest_email,
+    phone: order.guest_phone,
+    items:
+      order.orderItems?.map((item: any) => ({
+        id: item.id,
+        productId: item.product_id,
+        product: {
+          id: item.product?.id,
+          name: item.product?.name,
+          imageUrl: item.product?.image_url,
+          price: Number.parseFloat(item.product?.price ?? 0),
+        },
+        quantity: item.quantity,
+        price: Number.parseFloat(item.unit_price ?? 0),
+        total: Number.parseFloat(item.subtotal ?? 0),
+      })) ?? [],
+    subtotal:
+      Number.parseFloat(order.total_amount ?? 0) - Number.parseFloat(order.discount_amount ?? '0'),
+    shipping: 0,
+    tax: 0,
+    discount: Number.parseFloat(order.discount_amount ?? '0'),
+    total: Number.parseFloat(order.total_amount ?? 0),
+    currency: 'NGN',
+    status: order.status as OrderStatus,
+    paymentStatus: order.payment_status as PaymentStatus,
+    fulfillmentStatus: 'unfulfilled' as FulfillmentStatus,
+    shippingAddress: {
+      firstName: order.guest_name?.split(' ')[0] || '',
+      lastName: order.guest_name?.split(' ').slice(1).join(' ') || '',
+      company: '',
+      address1: '',
+      address2: '',
+      city: '',
+      province: '',
+      country: 'Nigeria',
+      zip: '',
+      phone: order.guest_phone,
+    },
+    notes: order.staff_notes,
+    tags: [],
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+    processedAt: undefined,
+    cancelledAt: undefined,
+    refunds: [],
+  }
 }

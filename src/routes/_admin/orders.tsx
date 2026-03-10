@@ -2,6 +2,7 @@ import { ShopifyOrdersTable } from '@/components/organisms/ShopifyOrdersTable'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useOrderStats, useRecentOrders } from '@/hooks/useOrders'
+import type { OrderStats } from '@/types/order'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   AlertTriangle,
@@ -10,14 +11,53 @@ import {
   CheckCircle,
   Clock,
   DollarSign,
+  Loader2,
   RefreshCw,
   ShoppingBag,
-  TrendingUp,
 } from 'lucide-react'
 
+function normalizeStats(raw: OrderStats | undefined): {
+  totalOrders: number
+  pendingOrders: number
+  completedOrders: number
+  totalRevenue: number
+  orderGrowth: number
+  revenueGrowth: number
+} {
+  if (!raw) {
+    return {
+      totalOrders: 0,
+      pendingOrders: 0,
+      completedOrders: 0,
+      totalRevenue: 0,
+      orderGrowth: 0,
+      revenueGrowth: 0,
+    }
+  }
+  const pending =
+    raw.status_counts?.find((s) => s.status === 'pending')?.count ?? 0
+  const completed =
+    raw.status_counts?.find((s) => s.status === 'picked_up')?.count ?? 0
+  const totalRevenue =
+    raw.recent_orders?.reduce(
+      (sum, o) => sum + Number.parseFloat(o.total_amount || '0'),
+      0
+    ) ?? 0
+  const apiRevenue = (raw as { total_revenue?: number }).total_revenue
+  return {
+    totalOrders: raw.total_orders ?? 0,
+    pendingOrders: pending,
+    completedOrders: completed,
+    totalRevenue: apiRevenue ?? totalRevenue,
+    orderGrowth: (raw as { order_growth?: number }).order_growth ?? 0,
+    revenueGrowth: (raw as { revenue_growth?: number }).revenue_growth ?? 0,
+  }
+}
+
 function OrdersManagement() {
-  const { data: stats } = useOrderStats()
+  const { data: rawStats, isLoading: statsLoading } = useOrderStats()
   const { data: recentOrders } = useRecentOrders(5)
+  const stats = normalizeStats(rawStats)
 
   return (
     <div className="space-y-6">
@@ -30,7 +70,17 @@ function OrdersManagement() {
       </div>
 
       {/* Stats Cards - Shopify Style */}
-      {stats && (
+      {statsLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="p-6 bg-white border border-gray-200 animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-1/2 mb-4" />
+              <div className="h-8 bg-gray-200 rounded w-1/3 mb-2" />
+              <div className="h-4 bg-gray-100 rounded w-2/3" />
+            </Card>
+          ))}
+        </div>
+      ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="p-6 bg-white border border-gray-200">
             <div className="space-y-2">
@@ -41,7 +91,9 @@ function OrdersManagement() {
               <p className="text-2xl font-bold text-gray-900">{stats.totalOrders || 0}</p>
               <div className="flex items-center space-x-1 text-sm">
                 <ArrowUpRight className="h-3 w-3 text-green-600" />
-                <span className="text-green-600 font-medium">+{stats.orderGrowth || 0}%</span>
+                <span className="text-green-600 font-medium">
+                  {stats.orderGrowth > 0 ? '+' : ''}{stats.orderGrowth}%
+                </span>
                 <span className="text-gray-500">vs last month</span>
               </div>
             </div>
@@ -56,7 +108,9 @@ function OrdersManagement() {
               <p className="text-2xl font-bold text-gray-900">{stats.pendingOrders || 0}</p>
               <div className="flex items-center space-x-1 text-sm">
                 <ArrowDownRight className="h-3 w-3 text-green-600" />
-                <span className="text-green-600 font-medium">-2%</span>
+                <span className="text-green-600 font-medium">
+                  {stats.orderGrowth > 0 ? '+' : ''}{stats.orderGrowth}%
+                </span>
                 <span className="text-gray-500">vs last month</span>
               </div>
             </div>
@@ -71,7 +125,9 @@ function OrdersManagement() {
               <p className="text-2xl font-bold text-gray-900">{stats.completedOrders || 0}</p>
               <div className="flex items-center space-x-1 text-sm">
                 <ArrowUpRight className="h-3 w-3 text-green-600" />
-                <span className="text-green-600 font-medium">+18%</span>
+                <span className="text-green-600 font-medium">
+                  {stats.orderGrowth > 0 ? '+' : ''}{stats.orderGrowth}%
+                </span>
                 <span className="text-gray-500">vs last month</span>
               </div>
             </div>
@@ -84,11 +140,13 @@ function OrdersManagement() {
                 <DollarSign className="h-4 w-4 text-gray-400" />
               </div>
               <p className="text-2xl font-bold text-gray-900">
-                ${stats.totalRevenue?.toLocaleString() || '0'}
+                ₦{stats.totalRevenue?.toLocaleString() || '0'}
               </p>
               <div className="flex items-center space-x-1 text-sm">
                 <ArrowUpRight className="h-3 w-3 text-green-600" />
-                <span className="text-green-600 font-medium">+{stats.revenueGrowth || 0}%</span>
+                <span className="text-green-600 font-medium">
+                  {stats.revenueGrowth > 0 ? '+' : ''}{stats.revenueGrowth}%
+                </span>
                 <span className="text-gray-500">vs last month</span>
               </div>
             </div>
