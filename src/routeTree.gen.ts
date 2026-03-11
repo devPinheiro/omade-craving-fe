@@ -9,7 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LandingRouteImport } from './routes/landing'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -31,9 +33,19 @@ import { Route as AdminHomeRouteImport } from './routes/_admin/home'
 import { Route as AdminCustomersRouteImport } from './routes/_admin/customers'
 import { Route as AdminCategoriesRouteImport } from './routes/_admin/categories'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandingRoute = LandingRouteImport.update({
@@ -144,7 +156,9 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/feedback': typeof FeedbackRoute
   '/landing': typeof LandingRoute
+  '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRoute
+  '/terms': typeof TermsRoute
   '/categories': typeof AdminCategoriesRoute
   '/customers': typeof AdminCustomersRoute
   '/home': typeof AdminHomeRoute
@@ -164,7 +178,9 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/feedback': typeof FeedbackRoute
   '/landing': typeof LandingRoute
+  '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRoute
+  '/terms': typeof TermsRoute
   '/categories': typeof AdminCategoriesRoute
   '/customers': typeof AdminCustomersRoute
   '/home': typeof AdminHomeRoute
@@ -188,7 +204,9 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/feedback': typeof FeedbackRoute
   '/landing': typeof LandingRoute
+  '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRoute
+  '/terms': typeof TermsRoute
   '/_admin/categories': typeof AdminCategoriesRoute
   '/_admin/customers': typeof AdminCustomersRoute
   '/_admin/home': typeof AdminHomeRoute
@@ -210,7 +228,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/feedback'
     | '/landing'
+    | '/privacy'
     | '/shop'
+    | '/terms'
     | '/categories'
     | '/customers'
     | '/home'
@@ -230,7 +250,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/feedback'
     | '/landing'
+    | '/privacy'
     | '/shop'
+    | '/terms'
     | '/categories'
     | '/customers'
     | '/home'
@@ -253,7 +275,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/feedback'
     | '/landing'
+    | '/privacy'
     | '/shop'
+    | '/terms'
     | '/_admin/categories'
     | '/_admin/customers'
     | '/_admin/home'
@@ -277,17 +301,33 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   FeedbackRoute: typeof FeedbackRoute
   LandingRoute: typeof LandingRoute
+  PrivacyRoute: typeof PrivacyRoute
   ShopRoute: typeof ShopRoute
+  TermsRoute: typeof TermsRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landing': {
@@ -498,7 +538,9 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   FeedbackRoute: FeedbackRoute,
   LandingRoute: LandingRoute,
+  PrivacyRoute: PrivacyRoute,
   ShopRoute: ShopRoute,
+  TermsRoute: TermsRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -315,13 +315,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </p>
               <div className="flex space-x-4 sm:space-x-6">
                 <a
-                  href="/feedback"
+                  href="/privacy"
                   className="text-gray-600 hover:text-gray-900 text-xs sm:text-sm transition-colors"
                 >
                   Privacy Policy
                 </a>
                 <a
-                  href="/feedback"
+                  href="/terms"
                   className="text-gray-600 hover:text-gray-900 text-xs sm:text-sm transition-colors"
                 >
                   Terms of Service
