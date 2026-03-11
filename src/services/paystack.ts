@@ -56,25 +56,29 @@ export class PaystackService {
   }
 
   /**
-   * Initialize Paystack payment
+   * Initialize Paystack payment (uses PaystackPop V2 API)
    */
   initializePayment(config: PaystackConfig): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        const popup = PaystackPop.setup({
-          ...config,
+        const paystack = new PaystackPop()
+        paystack.newTransaction({
           key: PAYSTACK_PUBLIC_KEY,
-          callback: (response) => {
+          email: config.email,
+          amount: config.amount,
+          currency: config.currency,
+          reference: config.ref,
+          metadata: config.metadata,
+          channels: config.channels,
+          onSuccess: (response) => {
             resolve(response)
             config.callback(response)
           },
-          onClose: () => {
+          onCancel: () => {
             reject(new Error('Payment was cancelled'))
             config.onClose()
           },
         })
-
-        popup.openIframe()
       } catch (error) {
         reject(error)
       }
