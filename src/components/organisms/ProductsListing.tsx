@@ -346,11 +346,11 @@ const ProductsListing = () => {
                 params={{ productId: product.id }}
                 className="block"
               >
-                <div className="aspect-square bg-gray-50 mb-4 overflow-hidden rounded-lg relative">
+                <div className="aspect-square bg-gray-50 mb-4 overflow-hidden rounded-lg relative flex items-center justify-center">
                   <img
                     src={product.imageUrl || '/placeholder-product.jpg'}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-contain object-center"
                   />
                   {/* Product Labels */}
                   <div className="absolute top-3 left-3 space-y-1">
@@ -376,18 +376,19 @@ const ProductsListing = () => {
                     </div>
                   )}
 
-                  {/* Quick Add to Cart Button - appears on hover */}
+                  {/* Add to Cart Button */}
                   {product.isActive && product.stock > 0 && (
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
                         handleAddToCart(product)
                       }}
-                      className="absolute inset-x-3 bottom-3 bg-black text-white py-2 px-4 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center justify-center space-x-2 hover:bg-gray-800 z-10"
+                      className="absolute inset-x-3 bottom-3 bg-black text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 z-10"
                     >
                       <ShoppingCart className="h-4 w-4" />
-                      <span className="text-sm font-medium">Quick Add</span>
+                      <span className="text-sm font-medium">Add to Cart</span>
                     </button>
                   )}
                 </div>

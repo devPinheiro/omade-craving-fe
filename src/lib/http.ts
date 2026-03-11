@@ -1,7 +1,8 @@
+import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+
+import axios from 'axios'
 import { router } from '@/main'
 import { useAuthStore } from '@/store/auth'
-import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import axios from 'axios'
 
 type RequestInterceptor = (
   config: InternalAxiosRequestConfig
@@ -31,7 +32,8 @@ const requestInterceptor: RequestInterceptor = (config) => {
     config.url?.includes('/auth/login') ||
     config.url?.includes('/auth/register') ||
     config.url?.includes('/auth/forgot-password') ||
-    config.url?.includes('/auth/reset-password')
+    config.url?.includes('/auth/reset-password') ||
+    config.url?.includes('/order-confirmation')
 
   if (isPublicRoute) {
     console.log('🔓 Request interceptor - Skipping auth for public route:', config.url)

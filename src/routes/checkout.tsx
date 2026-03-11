@@ -1,8 +1,9 @@
+import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+
 import { CheckoutForm } from '@/components/organisms/CheckoutForm'
 import { PublicLayout } from '@/components/templates/PublicLayout'
 import { useCartStore } from '@/store/cart'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/checkout')({
   component: CheckoutRoute,
@@ -14,10 +15,10 @@ function CheckoutRoute() {
 
   const handleOrderComplete = (orderId: string) => {
     // Navigate to order confirmation page
-    router.navigate({
-      to: '/order-confirmation',
-      search: { orderId },
-    })
+    // router.navigate({
+    //   to: '/order-confirmation',
+    //   search: { orderId },
+    // })
   }
 
   if (items.length === 0) {

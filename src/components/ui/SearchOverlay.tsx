@@ -276,11 +276,11 @@ const handleClearSearch = () => {
                         onClick={onClose}
                         className="block"
                       >
-                        <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-4 relative">
+                        <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-4 relative flex items-center justify-center">
                           <img
                             src={product.imageUrl || '/placeholder-product.jpg'}
                             alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            className="w-full h-full object-contain object-center"
                           />
 
                           {/* Product Labels */}
@@ -297,17 +297,18 @@ const handleClearSearch = () => {
                             )}
                           </div>
 
-                          {/* Quick Add Button */}
+                          {/* Add to Cart Button */}
                           {product.isActive && product.stock > 0 && (
                             <button
+                              type="button"
                               onClick={(e) => {
                                 e.preventDefault()
                                 e.stopPropagation()
                                 handleAddToCart(product)
                               }}
-                              className="absolute inset-x-3 bottom-3 bg-black text-white py-2 px-4 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 flex items-center justify-center space-x-2 hover:bg-gray-800"
+                              className="absolute inset-x-3 bottom-3 bg-black text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800"
                             >
-                              <span className="text-sm font-medium">Quick Add</span>
+                              <span className="text-sm font-medium">Add to Cart</span>
                             </button>
                           )}
                         </div>
