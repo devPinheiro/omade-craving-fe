@@ -10,6 +10,7 @@ import {
 import { useOrders, useDeleteOrder, useUpdateOrderStatus } from '@/hooks/useOrders'
 import { ordersService } from '@/services/orders'
 import { usePermissions } from '@/hooks/usePermissions'
+import type { ComponentType } from 'react'
 import type { Order, OrderFilters, OrderStatus } from '@/types/order'
 import { Link } from '@tanstack/react-router'
 import { toast } from 'sonner'
@@ -22,7 +23,6 @@ import {
   Filter,
   MoreHorizontal,
   Package,
-  Pencil,
   RefreshCw,
   Search,
   ShoppingBag,
@@ -78,7 +78,7 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
   }
 
   const getStatusIcon = (status: OrderStatus) => {
-    const icons: Record<string, any> = {
+    const icons: Record<string, ComponentType<{ className?: string }>> = {
       pending: Clock,
       confirmed: Package,
       preparing: Package,
@@ -192,6 +192,24 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
     }
   }
 
+  /** Bulk mark selected orders as ready for pickup (only status update allowed) */
+  const handleBulkMarkReady = async () => {
+    if (selectedOrders.length === 0) return
+    try {
+      await Promise.all(
+        selectedOrders.map((orderId) =>
+          updateStatusMutation.mutateAsync({ orderId, status: 'ready' })
+        )
+      )
+      toast.success(`${selectedOrders.length} order(s) marked as ready for pickup`)
+      setSelectedOrders([])
+    } catch (error: unknown) {
+      console.error('Failed to bulk update order status:', error)
+      const message = error instanceof Error ? error.message : 'Failed to update order status'
+      toast.error(message)
+    }
+  }
+
   if (isLoading) {
     return (
       <Card className="p-0 bg-white border border-gray-200">
@@ -290,11 +308,18 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
                       <Download className="h-4 w-4 mr-2" />
                       Export selected
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Mark as ready
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Mark as picked up
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleBulkMarkReady}
+                      disabled={updateStatusMutation.isPending}
+                    >
+                      {updateStatusMutation.isPending ? (
+                        <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                      )}
+                      Mark as ready for pickup
                     </Button>
                   </div>
                 </div>
@@ -435,13 +460,13 @@ export function ShopifyOrdersTable({ filters = {} }: ShopifyOrdersTableProps) {
                                 View
                               </Link>
                             </DropdownMenuItem>
-                            {canEdit && (
+                            {canEdit && order.status !== 'ready' && (
                               <DropdownMenuItem
                                 onSelect={() => handleEditOrder(order)}
                                 className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
                               >
-                                <Pencil className="h-4 w-4" />
-                                Edit
+                                <CheckCircle className="h-4 w-4" />
+                                Mark as ready for pickup
                               </DropdownMenuItem>
                             )}
                             <DropdownMenuItem

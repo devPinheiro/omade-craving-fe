@@ -17,7 +17,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [loading, setLoading] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const [search, setSearch] = useState ('')
-  const [trendingSearches] = useState(['Sourdough', 'Croissants', 'Red Velvet', 'Artisan Bread'])
+  const [trendingSearches] = useState(['Red Velvet', 'Chocolate', 'Custom Cakes', 'Celebration Cakes'])
   const searchInputRef = useRef<HTMLInputElement>(null)
   const addItem = useCartStore((state) => state.addItem)
 
@@ -145,7 +145,7 @@ const handleClearSearch = () => {
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="Search for breads, pastries, cakes..."
+                placeholder="Search for cakes..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-12 pr-16 py-4 text-xl border-2 border-gray-200 rounded-2xl focus:border-black focus:outline-none transition-all duration-300 font-content bg-gray-50 focus:bg-white focus:shadow-lg focus:shadow-black/5"
@@ -224,7 +224,7 @@ const handleClearSearch = () => {
                 <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                 <p className="text-lg mb-2">Search our bakery collection</p>
                 <p className="text-sm">
-                  Find fresh breads, pastries, cakes, and seasonal specialties
+                  Find custom cakes, celebration cakes, and seasonal specialties
                 </p>
               </div>
             </div>

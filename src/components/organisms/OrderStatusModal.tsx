@@ -5,14 +5,11 @@ import type { Order, OrderStatus } from '@/types/order'
 import { Loader2 } from 'lucide-react'
 import {
   CheckCircle,
-  Clock,
   Mail,
   MapPin,
   MessageSquare,
   Package,
   Phone,
-  RefreshCw,
-  Truck,
   User,
   X,
 } from 'lucide-react'
@@ -33,7 +30,7 @@ export function OrderStatusModal({
   isOpen = true,
   isUpdating = false,
 }: OrderStatusModalProps) {
-  const [newStatus, setNewStatus] = useState<OrderStatus>(order?.status || 'pending')
+  // Order status updates are limited to "ready for pickup" only
   const [notes, setNotes] = useState('')
 
   if (!isOpen || !order) return null
@@ -45,52 +42,16 @@ export function OrderStatusModal({
     icon: ReactNode
   }[] = [
     {
-      value: 'pending',
-      label: 'Pending',
-      description: 'Order received, awaiting confirmation',
-      icon: <Clock className="h-4 w-4" />,
-    },
-    {
-      value: 'confirmed',
-      label: 'Confirmed',
-      description: 'Order confirmed, will be prepared',
-      icon: <Package className="h-4 w-4" />,
-    },
-    {
-      value: 'preparing',
-      label: 'Preparing',
-      description: 'Order is being prepared',
-      icon: <Package className="h-4 w-4" />,
-    },
-    {
       value: 'ready',
-      label: 'Ready',
-      description: 'Order is ready for pickup',
+      label: 'Ready for pickup',
+      description: 'Order is ready for customer pickup',
       icon: <CheckCircle className="h-4 w-4" />,
-    },
-    {
-      value: 'picked_up',
-      label: 'Picked up',
-      description: 'Customer has picked up the order',
-      icon: <CheckCircle className="h-4 w-4" />,
-    },
-    {
-      value: 'cancelled',
-      label: 'Cancelled',
-      description: 'Order has been cancelled',
-      icon: <X className="h-4 w-4" />,
-    },
-    {
-      value: 'no_show',
-      label: 'No show',
-      description: 'Customer did not pick up',
-      icon: <Clock className="h-4 w-4" />,
     },
   ]
 
   const handleSubmit = () => {
     const updateNotes = notes.trim() || undefined
-    onStatusUpdate?.(order.id, newStatus, updateNotes)
+    onStatusUpdate?.(order.id, 'ready', updateNotes)
   }
 
   const getStatusColor = (status: OrderStatus) => {
@@ -208,26 +169,17 @@ export function OrderStatusModal({
             </div>
           </Card>
 
-          {/* Status Selection */}
+          {/* Status selection: only "ready for pickup" is supported */}
           <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-3">New Status</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Mark order as</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {statusOptions.map((option) => (
                 <div
                   key={option.value}
-                  className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
-                    newStatus === option.value
-                      ? `${getStatusColor(option.value)} border-current`
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={() => setNewStatus(option.value)}
+                  className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${getStatusColor(option.value)} border-current`}
                 >
                   <div className="flex items-center space-x-3">
-                    <div
-                      className={`${newStatus === option.value ? 'text-current' : 'text-gray-400'}`}
-                    >
-                      {option.icon}
-                    </div>
+                    <div className="text-current">{option.icon}</div>
                     <div>
                       <div className="font-medium text-gray-900">{option.label}</div>
                       <div className="text-xs text-gray-500">{option.description}</div>
@@ -240,11 +192,15 @@ export function OrderStatusModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="order-status-notes"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               <MessageSquare className="h-4 w-4 inline mr-1" />
               Notes (Optional)
             </label>
             <textarea
+              id="order-status-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
@@ -334,7 +290,7 @@ export function OrderStatusModal({
           <Button
             onClick={handleSubmit}
             className="bg-green-600 hover:bg-green-700"
-            disabled={newStatus === order.status || isUpdating}
+            disabled={order.status === 'ready' || isUpdating}
           >
             {isUpdating ? (
               <>
@@ -342,7 +298,7 @@ export function OrderStatusModal({
                 Updating...
               </>
             ) : (
-              'Update Status'
+              'Mark as ready for pickup'
             )}
           </Button>
         </div>
