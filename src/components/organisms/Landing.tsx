@@ -20,10 +20,10 @@ const Landing = () => {
   const { productsByCategory, isLoading: loading } = useLandingProducts()
 
   useSEO({
-    title: 'Omade Cravings - Artisanal Bakery | Fresh Handcrafted Breads & Pastries',
+    title: 'Omade Cravings - Artisanal Bakery | Handcrafted Cakes',
     description:
-      'Experience the finest artisanal bakery in town. Premium handcrafted breads, fresh pastries, and specialty baked goods made with organic ingredients.',
-    keywords: ['artisanal bakery', 'handcrafted bread', 'fresh pastries', 'organic ingredients'],
+      'Experience the finest artisanal cakes. Custom celebration cakes, signature flavors, and specialty cakes made with care and quality ingredients.',
+    keywords: ['artisanal bakery', 'handcrafted cakes', 'custom cakes', 'celebration cakes'],
     structuredData: getBusinessStructuredData(),
   })
 
@@ -42,8 +42,8 @@ const Landing = () => {
     //   image:
     //     'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
     //   title: 'FRESH DAILY',
-    //   subtitle: 'Handcrafted breads and pastries made fresh every morning',
-    //   cta: 'EXPLORE BREADS',
+    //   subtitle: 'Handcrafted cakes made fresh with care',
+    //   cta: 'EXPLORE CAKES',
     //   link: '#bestsellers',
     // },
     // {
@@ -190,7 +190,7 @@ const Landing = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {(featuredProducts.length > 0 ? featuredProducts : fallbackFeaturedProducts)
                 .slice(0, 4)
                 .map((product) => (
@@ -303,7 +303,7 @@ const Landing = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                 {products.slice(0, 4).map((product: Product) => (
                   <div key={product.id} className="group">
                     <Link
@@ -334,9 +334,9 @@ const Landing = () => {
 
                         {/* Out of Stock Overlay */}
                         {(product.stock === 0 || !product.isActive) && (
-                          <div className="absolute inset-0  bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
-                            <div className="bg-white px-4 py-2 rounded-lg shadow-lg">
-                              <span className="text-sm font-medium text-gray-900">
+                          <div className="absolute inset-0 bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+                            <div className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg shadow-lg">
+                              <span className="text-xs sm:text-sm font-medium text-gray-900">
                                 {product.stock === 0 ? 'Out of Stock' : 'Unavailable'}
                               </span>
                             </div>
@@ -352,10 +352,10 @@ const Landing = () => {
                               e.stopPropagation()
                               handleAddToCart(product)
                             }}
-                            className="absolute inset-x-3 bottom-3 bg-black text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 z-10"
+                            className="absolute inset-x-2 bottom-2 sm:inset-x-3 sm:bottom-3 bg-black text-white py-1.5 px-2 sm:py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-1 sm:space-x-2 hover:bg-gray-800 z-10"
                           >
-                            <ShoppingCart className="h-4 w-4" />
-                            <span className="text-sm font-medium">Add to Cart</span>
+                            <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                            <span className="text-xs sm:text-sm font-medium">Add to Cart</span>
                           </button>
                         )}
                       </div>
@@ -366,7 +366,7 @@ const Landing = () => {
                         to="/products/$productId"
                         params={{ productId: product.id }}
                       >
-                        <h3 className="text-lg font-medium text-gray-900 mb-2 hover:text-gray-600 transition-colors">
+                        <h3 className="text-sm sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2 hover:text-gray-600 transition-colors line-clamp-2">
                           {product.name}
                         </h3>
                       </Link>
@@ -379,8 +379,8 @@ const Landing = () => {
                         ))}
                         <span className="text-sm text-gray-500 ml-2">(4.8)</span>
                       </div> */}
-                      <div className="flex items-center justify-center space-x-2 mb-3">
-                        <span className="text-lg font-semibold text-gray-900">
+                      <div className="flex items-center justify-center space-x-2 mb-2 sm:mb-3">
+                        <span className="text-sm sm:text-lg font-semibold text-gray-900">
                           {formatCurrency(product.price)}
                         </span>
                       </div>
@@ -408,28 +408,32 @@ const Landing = () => {
       })}
 
       {/* Who We Are Section */}
-      <section id="who-we-are" className="py-16 sm:py-32  px-4 sm:px-6 lg:px-8">
+      <section id="who-we-are" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 sm:mb-8 tracking-wide">
-            WHO WE ARE
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 sm:mb-10 tracking-wide">
+            Who We Are
           </h2>
-          <div className="space-y-4 sm:space-y-6 text-base sm:text-lg text-gray-600 leading-relaxed">
-            <p className="px-4">
-              Omade Cravings is a modern artisanal bakery dedicated to creating exceptional baked
-              goods that bring people together. Founded with a passion for traditional techniques
-              and innovative flavors, we craft each item with meticulous attention to detail.
+          <div className="space-y-5 sm:space-y-6 text-base sm:text-lg text-gray-600 leading-relaxed">
+            <p className="px-2 sm:px-4">
+              Omade Cravings is an artisanal bakery born from a love of traditional baking and a
+              desire to create moments of joy. We handcraft custom cakes and celebration cakes
+              using time-honored methods and the finest ingredients—so every slice feels special.
             </p>
-            <p className="px-4">
-              Our mission is to elevate the everyday bread experience through carefully sourced
-              ingredients, time-honored methods, and creative inspiration. From our signature
-              sourdough to seasonal specialties, every product tells a story of craftsmanship and
-              care.
+            <p className="px-2 sm:px-4">
+              From signature flavors to bespoke designs, we put care into every detail. We
+              believe great baking is more than food—it’s a way to bring people together and add
+              a little warmth to your day.
             </p>
-            <p className="font-medium text-gray-900 px-4">
-              We believe that great bread is more than sustenance - it's a cornerstone of community,
-              comfort, and connection.
+            <p className="font-medium text-gray-900 px-2 sm:px-4 text-lg sm:text-xl">
+              Crafted with care. Shared with love.
             </p>
           </div>
+          <a
+            href="/about"
+            className="inline-block mt-8 sm:mt-10 text-gray-900 font-medium underline underline-offset-4 hover:no-underline focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 rounded"
+          >
+            Read our story →
+          </a>
         </div>
       </section>
 
@@ -496,7 +500,7 @@ const Landing = () => {
                   Traditional Baking Techniques
                 </h3>
                 <p className="text-gray-600 mb-3">
-                  Discover the time-honored methods that make our bread extraordinary.
+                  Discover the time-honored methods that make our cakes extraordinary.
                 </p>
                 <span className="text-sm text-gray-500">March 15, 2024</span>
               </div>

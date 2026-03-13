@@ -1,18 +1,19 @@
-import { useSEO } from '@/hooks/useSEO'
+import { AlertCircle, ChevronDown, Filter, Loader2, ShoppingCart } from 'lucide-react'
+import type { Category, Product } from '@/types/product'
+import {
+  announceLoadingState,
+  announceSuccess,
+  announceToScreenReader,
+  handleKeyboardNavigation
+} from '../../utils/accessibility'
+import { useEffect, useState } from 'react'
+
+import { Link } from '@tanstack/react-router'
 import { getBusinessStructuredData } from '@/lib/seo'
 import { productsService } from '@/services/products'
-import { Link } from '@tanstack/react-router'
-import { useCartStore } from '@/store/cart'
-import type { Category, Product } from '@/types/product'
-import { AlertCircle, ChevronDown, Filter, Loader2, ShoppingCart } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { 
-  handleKeyboardNavigation, 
-  announceToScreenReader, 
-  announceLoadingState,
-  announceSuccess 
-} from '../../utils/accessibility'
+import { useCartStore } from '@/store/cart'
+import { useSEO } from '@/hooks/useSEO'
 
 const ProductsListing = () => {
   const [sortBy, setSortBy] = useState('featured')
@@ -71,12 +72,12 @@ const ProductsListing = () => {
   }, [currentPage, selectedCategories])
 
   useSEO({
-    title: 'All Products - Omade Cravings | Premium Cakes & Pastries',
+    title: 'All Products - Omade Cravings | Premium Cakes',
     description:
-      'Browse our complete collection of artisanal cakes, pastries, and baked goods. Custom cakes, signature flavors, and seasonal specialties.',
+      'Browse our complete collection of artisanal cakes. Custom cakes, signature flavors, and seasonal specialties.',
     keywords: [
       'cakes',
-      'pastries',
+      'celebration cakes',
       'bakery products',
       'custom cakes',
       'artisanal bakery',
@@ -338,7 +339,7 @@ const ProductsListing = () => {
         )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {sortedProducts.map((product) => (
             <div key={product.id} className="group">
               <Link
@@ -368,8 +369,8 @@ const ProductsListing = () => {
                   {/* Out of Stock Overlay */}
                   {(product.stock === 0 || !product.isActive) && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
-                      <div className="bg-white px-4 py-2 rounded-lg shadow-lg">
-                        <span className="text-sm font-medium text-gray-900">
+                      <div className="bg-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg shadow-lg">
+                        <span className="text-xs sm:text-sm font-medium text-gray-900">
                           {product.stock === 0 ? 'Out of Stock' : 'Unavailable'}
                         </span>
                       </div>
@@ -377,7 +378,7 @@ const ProductsListing = () => {
                   )}
 
                   {/* Add to Cart Button */}
-                  {product.isActive && product.stock > 0 && (
+                  {/* {product.isActive && product.stock > 0 && (
                     <button
                       type="button"
                       onClick={(e) => {
@@ -385,12 +386,12 @@ const ProductsListing = () => {
                         e.stopPropagation()
                         handleAddToCart(product)
                       }}
-                      className="absolute inset-x-3 bottom-3 bg-black text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 z-10"
+                      className="absolute inset-x-2 bottom-2 sm:inset-x-3 sm:bottom-3 bg-black text-white py-1.5 px-2 sm:py-2 sm:px-4 rounded-lg flex items-center justify-center space-x-1 sm:space-x-2 hover:bg-gray-800 z-10"
                     >
-                      <ShoppingCart className="h-4 w-4" />
-                      <span className="text-sm font-medium">Add to Cart</span>
+                      <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                      <span className="text-xs sm:text-sm font-medium">Add to Cart</span>
                     </button>
-                  )}
+                  )} */}
                 </div>
               </Link>
 
@@ -399,16 +400,16 @@ const ProductsListing = () => {
                   to="/products/$productId"
                   params={{ productId: product.id }}
                 >
-                  <h3 className="product-title text-lg font-medium text-gray-900 mb-2 hover:text-gray-600 transition-colors">
+                  <h3 className="product-title text-sm sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2 hover:text-gray-600 transition-colors line-clamp-2">
                     {product.name}
                   </h3>
                 </Link>
-                <div className="flex items-center justify-center space-x-2 mb-3">
-                  <span className="price-text text-lg font-semibold text-gray-900">
+                <div className="flex items-center justify-center space-x-2 mb-2 sm:mb-3">
+                  <span className="price-text text-sm sm:text-lg font-semibold text-gray-900">
                     {formatCurrency(product.price)}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 mb-3">
+                <p className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3 line-clamp-2">
                   {typeof product.category === 'string' ? product.category : product.category.name}{' '}
                   {product.tags && product.tags.length > 0 && `• ${product.tags.join(', ')}`}
                 </p>
@@ -420,29 +421,27 @@ const ProductsListing = () => {
 
                 {/* Mobile Actions */}
                 <div className="sm:hidden space-y-2">
-                  <Link
+                  {/* <Link
                     to="/products/$productId"
                     params={{ productId: product.id }}
-                    className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                    className="w-full bg-white border border-gray-300 text-gray-700 py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2 text-xs font-medium sm:text-sm"
                   >
-                    <span className="text-sm font-medium">View Details</span>
-                  </Link>
+                    <span>View Details</span>
+                  </Link> */}
                   {product.isActive && product.stock > 0 ? (
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"
+                      className="w-full bg-black text-white py-1.5 px-3 sm:py-2 sm:px-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2 text-xs font-medium sm:text-sm"
                     >
-                      <ShoppingCart className="h-4 w-4" />
-                      <span className="text-sm font-medium">Add to Cart</span>
+                      <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                      <span>Add to Cart</span>
                     </button>
                   ) : (
                     <button
                       disabled
-                      className="w-full bg-gray-300 text-gray-500 py-2 px-4 rounded-lg cursor-not-allowed flex items-center justify-center space-x-2"
+                      className="w-full bg-gray-300 text-gray-500 py-1.5 px-3 sm:py-2 sm:px-4 rounded-lg cursor-not-allowed flex items-center justify-center space-x-2 text-xs font-medium sm:text-sm"
                     >
-                      <span className="text-sm font-medium">
-                        {product.stock === 0 ? 'Out of Stock' : 'Unavailable'}
-                      </span>
+                      <span>{product.stock === 0 ? 'Out of Stock' : 'Unavailable'}</span>
                     </button>
                   )}
                 </div>

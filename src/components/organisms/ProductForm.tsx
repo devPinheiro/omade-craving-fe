@@ -111,7 +111,6 @@ export function ProductForm({ product, onSave, onCancel, isOpen = true }: Produc
   const categoriesOptions = [
     { id: 'cake', name: 'Cake' },
     { id: 'cookie', name: 'Cookie' },
-    { id: 'bread', name: 'Bread' },
   ]
   const addImage = () => {
     const imageUrl = prompt('Enter image URL:')

@@ -22,7 +22,7 @@ export default function AboutUs() {
       icon: Heart,
       title: 'Passion for Craft',
       description:
-        'Every loaf, pastry, and cake is crafted with genuine love and dedication to the art of baking.',
+        'Every cake is crafted with genuine love and dedication to the art of baking.',
     },
     {
       icon: Leaf,
@@ -49,7 +49,7 @@ export default function AboutUs() {
       year: '2020',
       title: 'The Beginning',
       description:
-        'Started as a passion project in a home kitchen, perfecting traditional bread recipes.',
+        'Started as a passion project in a home kitchen, perfecting cake recipes and techniques.',
     },
     {
       year: '2022',
@@ -87,29 +87,28 @@ export default function AboutUs() {
           <div className="text-center text-white max-w-4xl mx-auto px-4">
             <h1 className="font-luxury-display text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-luxury text-luxury-shadow">OUR STORY</h1>
             <p className="text-xl md:text-2xl font-light max-w-2xl mx-auto leading-relaxed">
-              From a passion for traditional baking to creating moments of joy, one handcrafted loaf
-              at a time.
+              From a passion for baking to creating moments of joy, one handcrafted cake at a time.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Mission Statement */}
+      {/* Who We Are / Mission */}
       <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
-            WHO WE ARE
+            Who We Are
           </h2>
           <div className="space-y-6 text-lg sm:text-xl text-gray-700 leading-relaxed">
             <p>
-              Omade Cravings was born from a simple belief: that bread is more than sustenance— it's
-              a cornerstone of community, comfort, and connection. What began as weekend experiments
-              in a home kitchen has blossomed into Lagos's premier artisanal bakery.
+              Omade Cravings was born from a simple belief: that baking is more than sustenance—it’s
+              a cornerstone of community, comfort, and connection. What began as a passion for
+              traditional techniques in a home kitchen has grown into an artisanal bakery where
+              every cake is made with care.
             </p>
             <p>
-              We combine time-honored techniques with innovative flavors, using only the finest
-              organic ingredients to create breads, pastries, and cakes that don't just satisfy
-              hunger, but nourish the soul.
+              We combine time-honored methods with the finest ingredients to create custom cakes
+              and celebration cakes that add a little warmth and joy to your day.
             </p>
           </div>
         </div>
@@ -133,15 +132,14 @@ export default function AboutUs() {
                 </p>
 
                 <p>
-                  With a background in business and a newfound passion for the ancient art of bread
-                  making, Omade spent countless hours perfecting sourdough starters, studying
-                  traditional European techniques, and experimenting with locally sourced Nigerian
-                  ingredients.
+                  With a background in business and a newfound passion for baking, Omade spent
+                  countless hours perfecting recipes, studying traditional techniques, and
+                  experimenting with quality ingredients to create cakes that bring people together.
                 </p>
 
                 <p>
-                  "Every loaf tells a story," Omade reflects. "I wanted to create a space where that
-                  story could bring people together—where the aroma of fresh bread could transform
+                  "Every cake tells a story," Omade reflects. "I wanted to create a space where that
+                  story could bring people together—where a beautiful cake could transform
                   an ordinary day into something special."
                 </p>
 
@@ -187,12 +185,12 @@ export default function AboutUs() {
               OUR VALUES
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-              The principles that guide every decision we make and every loaf we bake
+              The principles that guide every decision we make and every cake we bake
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
+            {values.map((value) => (
               <div
                 key={value.title}
                 className="text-center group hover:transform hover:scale-105 transition-all duration-300"
@@ -223,7 +221,7 @@ export default function AboutUs() {
           </div>
 
           <div className="space-y-12">
-            {milestones.map((milestone, index) => (
+            {milestones.map((milestone) => (
               <div
                 key={milestone.year}
                 className="flex flex-col md:flex-row md:items-center gap-6 group"
@@ -263,8 +261,8 @@ export default function AboutUs() {
               </div>
               <h3 className="text-xl font-semibold mb-4">Time & Patience</h3>
               <p className="text-gray-300 leading-relaxed">
-                Our sourdough starters are nurtured for days, allowing natural fermentation to
-                develop complex flavors and perfect texture.
+                Our recipes are developed with care, using quality ingredients and time-tested
+                methods to create cakes with exceptional flavor and texture.
               </p>
             </div>
 
@@ -285,8 +283,8 @@ export default function AboutUs() {
               </div>
               <h3 className="text-xl font-semibold mb-4">Master Craftsmanship</h3>
               <p className="text-gray-300 leading-relaxed">
-                Traditional techniques combined with modern precision create breads and pastries
-                that honor both heritage and innovation.
+                Traditional techniques combined with modern precision create cakes that honor
+                both heritage and innovation.
               </p>
             </div>
           </div>
@@ -309,7 +307,7 @@ export default function AboutUs() {
             <div className="aspect-square bg-gray-100 overflow-hidden rounded-lg">
               <img
                 src="https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                alt="Fresh baked bread"
+                alt="Fresh baked cakes"
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
               />
             </div>
@@ -323,7 +321,7 @@ export default function AboutUs() {
             <div className="aspect-square bg-gray-100 overflow-hidden rounded-lg">
               <img
                 src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                alt="Artisan pastries"
+                alt="Artisan cakes"
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
               />
             </div>

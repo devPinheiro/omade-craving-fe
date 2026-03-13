@@ -63,18 +63,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             {/* Desktop Navigation */}
             {/* <nav className="hidden lg:flex space-x-6 xl:space-x-8">
               <a
-                href="/shop?category=bread"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                BREADS
-              </a>
-              <a
-                href="/shop?category=pastry"
-                className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
-              >
-                PASTRIES
-              </a>
-              <a
                 href="/shop?category=cake"
                 className="font-luxury-sans text-gray-900 hover:text-gray-600 px-3 py-2 text-sm font-medium transition-colors tracking-premium"
               >
@@ -127,18 +115,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <div className="lg:hidden border-t border-gray-200 py-4">
               <div className="flex flex-col space-y-2">
                 <a
-                  href="/shop?category=bread"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  BREADS
-                </a>
-                <a
-                  href="/shop?category=pastry"
-                  className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
-                >
-                  PASTRIES
-                </a>
-                <a
                   href="/shop?category=cake"
                   className="text-gray-900 block px-3 py-2 text-base font-medium hover:bg-gray-50 rounded transition-colors"
                 >
@@ -189,18 +165,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                   </a>
                 </li>
                 <li>
-                  <a href="/shop?category=bread" className="hover:text-gray-900 transition-colors">
-                    Breads
-                  </a>
-                </li>
-                <li>
-                  <a href="/shop?category=pastry" className="hover:text-gray-900 transition-colors">
-                    Pastries
-                  </a>
-                </li>
-                <li>
                   <a href="/shop?category=cake" className="hover:text-gray-900 transition-colors">
                     Cakes
+                  </a>
+                </li>
+                <li>
+                  <a href="/build-cake" className="hover:text-gray-900 transition-colors">
+                    Custom Cakes
                   </a>
                 </li>
               </ul>

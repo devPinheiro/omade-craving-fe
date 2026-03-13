@@ -77,7 +77,7 @@ export const FontShowcase = () => {
             Classic Quote (Libre Baskerville)
           </h3>
           <blockquote className="font-luxury-quote text-2xl text-gray-800 mb-4 leading-refined">
-            "Every loaf is a masterpiece, every pastry a moment of pure indulgence."
+            "Every cake is a masterpiece, a moment of pure indulgence."
           </blockquote>
           <cite className="font-luxury-sans text-sm text-gray-600 font-medium tracking-premium">
             — Chef Amara, Head Baker
@@ -138,7 +138,7 @@ export const FontShowcase = () => {
               Golden Elegance
             </h3>
             <p className="font-luxury-serif text-lg text-gray-700 leading-refined">
-              Warm, inviting tones that evoke the golden crust of freshly baked bread
+              Warm, inviting tones that evoke the elegance of freshly crafted cakes
             </p>
           </div>
 

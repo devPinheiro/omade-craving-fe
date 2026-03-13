@@ -6,8 +6,8 @@ const ComingSoon = () => {
   useSEO({
     title: 'Omade Cravings - Coming Soon | Artisanal Bakery',
     description:
-      'Something delicious is coming. Omade Cravings artisanal bakery will be launching soon with fresh handcrafted breads and pastries.',
-    keywords: ['artisanal bakery', 'coming soon', 'handcrafted bread', 'fresh pastries'],
+      'Something delicious is coming. Omade Cravings artisanal bakery will be launching soon with handcrafted cakes.',
+    keywords: ['artisanal bakery', 'coming soon', 'handcrafted cakes', 'custom cakes'],
     structuredData: getBusinessStructuredData(),
   })
 
@@ -33,8 +33,8 @@ const ComingSoon = () => {
           </h2>
           <p className="text-lg sm:text-xl text-gray-600 leading-relaxed mb-8">
             Something delicious is baking in our ovens. We're crafting an extraordinary artisanal
-            bakery experience that will bring you the finest handcrafted breads, pastries, and
-            specialty baked goods.
+            bakery experience that will bring you the finest handcrafted cakes and
+            custom celebration cakes.
           </p>
           <p className="text-base text-gray-500">
             Get ready to taste the difference that passion and tradition make.

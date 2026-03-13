@@ -26,16 +26,15 @@ export const appSEOConfig: AppSEOConfig = {
   // defaultImage: 'https://res.cloudinary.com/appnet/image/upload/v1765399940/loaf_tcnxv5.png',
   defaultImage: 'https://res.cloudinary.com/dfztdh10f/image/upload/v1770638460/Omade_Cravings_m8jxnu.png',
   defaultKeywords: [
-    'artisan bread',
-    'fresh baked goods',
+    'artisan cakes',
+    'custom cakes',
     'bakery',
-    'sourdough',
-    'pastries',
+    'celebration cakes',
     'organic ingredients',
-    'handcrafted bread',
+    'handcrafted cakes',
     'local bakery',
-    'premium baking',
-    'artisanal food',
+    'premium cakes',
+    'artisanal cakes',
   ],
   twitterHandle: '@omadecravings',
   locale: 'en_US',
@@ -43,9 +42,9 @@ export const appSEOConfig: AppSEOConfig = {
 }
 
 export const defaultSEO: SEOConfig = {
-  title: 'Omade Cravings - Artisanal Breads & Fresh Baked Goods',
+  title: 'Omade Cravings - Artisanal Cakes & Custom Cakes',
   description:
-    'Experience the finest artisanal breads and fresh baked goods at Omade Cravings. We craft premium sourdough, pastries, and specialty items using organic ingredients and traditional techniques.',
+    'Experience the finest artisanal cakes at Omade Cravings. We craft custom cakes, celebration cakes, and specialty cakes using quality ingredients and traditional techniques.',
   keywords: appSEOConfig.defaultKeywords,
   ogImage: appSEOConfig.defaultImage,
   ogType: 'website',
