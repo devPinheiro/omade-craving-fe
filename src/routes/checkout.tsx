@@ -27,8 +27,8 @@ function CheckoutRoute() {
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="text-center">
             <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-2xl font-light text-gray-900 mb-2">Your cart is empty</h2>
-            <p className="text-gray-600 mb-6">Add some delicious items to get started!</p>
+            <h2 className="text-2xl font-light text-gray-900 mb-2">Your order is on its way!</h2>
+            <p className="text-gray-600 mb-6">Thank you for your order. You will receive an email with your order details.</p>
             <a
               href="/shop"
               className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors inline-block"

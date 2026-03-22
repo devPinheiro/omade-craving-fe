@@ -148,7 +148,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Page Content */}
-      <main className="pt-32">{children}</main>
+      <main className="pt-16 lg:pt-32">{children}</main>
 
       {/* Footer */}
       <footer className="bg-white py-12  px-4 sm:px-6 lg:px-8">

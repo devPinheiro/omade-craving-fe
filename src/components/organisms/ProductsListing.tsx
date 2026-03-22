@@ -347,7 +347,7 @@ const ProductsListing = () => {
                 params={{ productId: product.id }}
                 className="block"
               >
-                <div className="aspect-square bg-gray-50 mb-4 overflow-hidden rounded-lg relative flex items-center justify-center">
+                <div className="aspect-square bg-white mb-4 overflow-hidden rounded-lg relative flex items-center justify-center">
                   <img
                     src={product.imageUrl || '/placeholder-product.jpg'}
                     alt={product.name}

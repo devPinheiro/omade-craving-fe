@@ -12,12 +12,12 @@ import {
 } from 'lucide-react'
 import { announceSuccess, announceToScreenReader, handleKeyboardNavigation } from '../../utils/accessibility'
 
+import { Link } from '@tanstack/react-router'
 import type { Product } from '@/types/product'
 import { getBusinessStructuredData } from '@/lib/seo'
 import { toast } from 'sonner'
 import { useCartStore } from '@/store/cart'
 import { useSEO } from '@/hooks/useSEO'
-import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
 interface ProductDetailsProps {
@@ -151,11 +151,11 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
           {/* Product Images */}
           <section className="space-y-4" aria-label="Product images">
             {/* Main Image */}
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group">
+            <div className="aspect-square bg-white rounded-lg overflow-hidden relative group">
               <img
                 src={images[currentImageIndex]}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
 
               {/* Image Navigation */}

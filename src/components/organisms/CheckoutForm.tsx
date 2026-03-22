@@ -5,7 +5,6 @@ import {
 import {
   type CheckoutFormData,
   checkoutSchema,
-  formatPhoneNumber,
 } from "@/lib/checkout-validation";
 import {
   calculateDeliveryFee,
@@ -59,7 +58,6 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
     register,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors, isValid },
   } = useForm<CheckoutFormData>({
     resolver: valibotResolver(checkoutSchema),
@@ -71,9 +69,11 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
     },
   });
 
+  console.log(errors, isValid);
+  
+
   const watchedState = watch("state");
   const watchedDeliveryMethod = watch("deliveryMethod");
-  const watchedPhone = watch("phone");
 
   // Calculate delivery fee when state changes
   useEffect(() => {
@@ -84,16 +84,6 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
       setDeliveryFee(0);
     }
   }, [watchedState, watchedDeliveryMethod, subtotal]);
-
-  // Format phone number as user types
-  useEffect(() => {
-    if (watchedPhone) {
-      const formatted = formatPhoneNumber(watchedPhone);
-      if (formatted !== watchedPhone) {
-        setValue("phone", formatted);
-      }
-    }
-  }, [watchedPhone, setValue]);
 
   // Set minimum delivery date (next day)
   useEffect(() => {
@@ -398,8 +388,10 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
             <input
               {...register("phone")}
               type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-              placeholder="+234 801 234 5678"
+              placeholder="11 digits (e.g. 08012345678)"
             />
             {errors.phone && (
               <p className="text-red-500 text-sm mt-1">
@@ -502,7 +494,7 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  City *
+                  City <span className="text-gray-500 font-normal">(optional)</span>
                 </label>
                 <input
                   {...register("city")}
@@ -699,12 +691,7 @@ export const CheckoutForm = ({ onOrderComplete }: CheckoutFormProps) => {
             </div>
           )}
 
-          {deliveryFee === 0 && watchedDeliveryMethod === "home_delivery" && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Delivery Fee</span>
-              <span className="text-green-600 font-medium">FREE</span>
-            </div>
-          )}
+         
 
           <div className="border-t border-gray-200 pt-3 flex justify-between font-medium">
             <span className="text-gray-900">Total</span>

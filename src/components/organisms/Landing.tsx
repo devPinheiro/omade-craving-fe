@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Link } from "@tanstack/react-router";
+import { MobileHeroConfetti } from "@/components/ui/MobileHeroConfetti";
 import type { Product } from "@/types/product";
 import { ShoppingCart } from "lucide-react";
 import { getBusinessStructuredData } from "@/lib/seo";
@@ -38,19 +39,19 @@ const Landing = () => {
       image:
         "https://res.cloudinary.com/appnet/image/upload/v1773096899/products/phrsr0octibydndforfm.png",
       title: "OMADE CRAVINGS",
-      subtitle: "Artisanal baked goods crafted with love and tradition",
+      subtitle: "Handcrafted baked goods made with love and tradition",
       cta: "SHOP NOW",
       link: "/shop",
     },
-    // {
-    //   id: 2,
-    //   image:
-    //     'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    //   title: 'FRESH DAILY',
-    //   subtitle: 'Handcrafted cakes made fresh with care',
-    //   cta: 'EXPLORE CAKES',
-    //   link: '#bestsellers',
-    // },
+    {
+      id: 2,
+      image:
+        'https://res.cloudinary.com/appnet/image/upload/v1773096544/products/gwixommfwyituezqlz6u.png',
+      title: 'FRESH DAILY',
+      subtitle: 'Handcrafted cakes made fresh with care',
+      cta: 'EXPLORE CAKES',
+      link: '#bestsellers',
+    },
     // {
     //   id: 3,
     //   image:
@@ -108,7 +109,8 @@ const Landing = () => {
 
   return (
     <div>
-      {/* Header */}
+      {/* Subtle confetti on mobile only (hero carousel is lg+) */}
+      <MobileHeroConfetti />
 
       {/* Hero Carousel Section - Salt Lagos Style with Animation */}
       <section className="">
@@ -124,9 +126,9 @@ const Landing = () => {
               <img
                 src={slide.image}
                 alt={slide.title}
-                className="w-full h-full object-cover animate-scale-in"
+                className="w-full h-full object-contain animate-scale-in"
               />
-              <div className="absolute inset-0 bg-black opacity-60" />
+              <div className="absolute inset-0 bg-black opacity-40" />
 
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-white px-4 max-w-4xl mx-auto">
@@ -295,8 +297,8 @@ const Landing = () => {
 
           return (
             <section
-              key={categoryName}
-              className={`py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 ${bgClass}`}
+              key={ products[0]?.category}
+              className={`pb-12 pt-0 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 ${bgClass}`}
             >
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-8 sm:mb-12">
@@ -317,7 +319,7 @@ const Landing = () => {
                         params={{ productId: product.id }}
                         className="block"
                       >
-                        <div className="aspect-square bg-gray-50 mb-4 overflow-hidden rounded-lg relative flex items-center justify-center">
+                        <div className="aspect-square bg-white mb-4 overflow-hidden rounded-lg relative flex items-center justify-center">
                           <img
                             src={product.imageUrl || "/placeholder-product.jpg"}
                             alt={product.name}
@@ -353,7 +355,7 @@ const Landing = () => {
                           )}
 
                           {/* Add to Cart Button */}
-                          {product.isActive && product.stock > 0 && (
+                          {/* {product.isActive && product.stock > 0 && (
                             <button
                               type="button"
                               onClick={(e) => {
@@ -368,7 +370,7 @@ const Landing = () => {
                                 Add to Cart
                               </span>
                             </button>
-                          )}
+                          )} */}
                         </div>
                       </Link>
 
@@ -407,10 +409,10 @@ const Landing = () => {
 
                 <div className="text-center mt-12">
                   <a
-                    href={`/shop?category=${categoryName.toLowerCase()}`}
+                    href={`/shop?category=${products[0]?.category?.toLowerCase()}`}
                     className="inline-block bg-orange-600 rounded-full text-white px-8 py-3 font-medium hover:bg-gray-800 transition-colors"
                   >
-                    See All New Arrivals
+                    See All { products[0]?.category === 'cake' ? 'New Arrivals' : products[0]?.category?.toLowerCase() }
                   </a>
                 </div>
               </div>
