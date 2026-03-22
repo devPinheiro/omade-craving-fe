@@ -1,5 +1,6 @@
-import { NIGERIAN_STATES } from '@/types/checkout'
 import * as v from 'valibot'
+
+import { NIGERIAN_STATES } from '@/types/checkout'
 
 export const checkoutSchema = v.object({
   // Customer Details
@@ -23,10 +24,9 @@ export const checkoutSchema = v.object({
   ),
   phone: v.pipe(
     v.string(),
-    v.minLength(11, 'Phone number must be at least 11 characters'),
-    v.maxLength(14, 'Phone number must be less than 14 characters'),
-    v.regex(/^(\+234|234|0)[789][01]\d{8}$/, 'Please enter a valid Nigerian phone number'),
-    v.trim()
+    v.trim(),
+    v.transform((input) => input.replace(/\D/g, '')),
+    v.regex(/^\d{11}$/, 'Phone must be exactly 11 digits'),
   ),
 
   // Delivery Details
@@ -36,14 +36,10 @@ export const checkoutSchema = v.object({
     v.maxLength(200, 'Address must be less than 200 characters'),
     v.trim()
   ),
-  city: v.pipe(
-    v.string(),
-    v.minLength(2, 'City must be at least 2 characters'),
-    v.maxLength(50, 'City must be less than 50 characters'),
-    v.trim()
-  ),
-  state: v.pipe(v.string(), v.picklist(NIGERIAN_STATES, 'Please select a valid Nigerian state')),
-  postalCode: v.string(),
+  /** Optional: empty or 2–50 characters if provided */
+  city: v.optional(v.string()),
+  state: v.pipe(v.string()),
+  postalCode: v.optional(v.string()),
   deliveryInstructions: v.optional(
     v.pipe(
       v.string(),
@@ -67,24 +63,8 @@ export const validateCheckoutForm = (data: unknown) => {
   return v.safeParse(checkoutSchema, data)
 }
 
-// Field-specific validation helpers
-export const formatPhoneNumber = (phone: string): string => {
-  // Remove all non-digit characters
-  const digits = phone.replace(/\D/g, '')
-
-  // Handle different Nigerian phone number formats
-  if (digits.startsWith('234')) {
-    return `+${digits}`
-  }
-  if (digits.startsWith('0')) {
-    return `+234${digits.slice(1)}`
-  }
-  if (digits.length === 10) {
-    return `+234${digits}`
-  }
-
-  return phone
-}
+/** Strip non-digits (e.g. for display or API); validation uses 11 digits in schema */
+export const digitsOnly = (phone: string): string => phone.replace(/\D/g, '')
 
 export const validateEmailDomain = (email: string): boolean => {
   const commonDomains = [
