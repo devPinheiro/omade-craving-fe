@@ -1,6 +1,6 @@
-import { useSEO } from '@/hooks/useSEO'
-import { getBusinessStructuredData } from '@/lib/seo'
 import OmadeLogo from "@/assets/Images/Omade Cravings.png"
+import { getBusinessStructuredData } from '@/lib/seo'
+import { useSEO } from '@/hooks/useSEO'
 
 const ComingSoon = () => {
   useSEO({
@@ -63,7 +63,7 @@ const ComingSoon = () => {
         <div className="mt-12">
           <p className="text-sm text-gray-500 mb-4">Follow our journey</p>
           <div className="flex justify-center space-x-6">
-            <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
+            <a href="https://www.instagram.com/omade.cravings/" className="text-gray-400 hover:text-gray-600 transition-colors">
               <span className="sr-only">Instagram</span>
               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                 <path
@@ -73,7 +73,7 @@ const ComingSoon = () => {
                 <path d="M12.017 15.33a3.566 3.566 0 110-7.132 3.566 3.566 0 010 7.132zM12.017 5.898a6.1 6.1 0 100 12.2 6.1 6.1 0 000-12.2zM18.408 5.594a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" />
               </svg>
             </a>
-            <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
+            <a href="https://www.facebook.com/omade.cravings/" className="text-gray-400 hover:text-gray-600 transition-colors">
               <span className="sr-only">Facebook</span>
               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                 <path
